@@ -19,10 +19,6 @@
     <!-- Canvas Confetti -->
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
-    <!-- Firebase SDKs -->
-    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
-
     <script>
         tailwind.config = {
             theme: {
@@ -157,7 +153,6 @@
                 </div>
 
                 <div class="grid grid-cols-2 gap-3 sm:gap-5" id="barber-boxes">
-                    <!-- Barber 1: Hamad -->
                     <div class="selectable-box rounded-2xl p-3 sm:p-4 text-center group" onclick="selectBarber('الكوافير حمد', '9647756534000', this)">
                         <div class="relative w-24 h-24 sm:w-32 sm:h-32 mx-auto mb-2.5 rounded-2xl overflow-hidden border-2 border-maroon-400 shadow-xl">
                             <img src="449CCDB0-C779-4D78-AB90-D05FA10F3084.jpeg" alt="الكوافير حمد" class="w-full h-full object-cover object-top group-hover:scale-110 transition-transform duration-500" onerror="this.src='image_8.png'">
@@ -165,7 +160,6 @@
                         <div class="font-black font-tajawal text-base sm:text-xl text-white">الكوافير حمد</div>
                     </div>
 
-                    <!-- Barber 2: Diyar -->
                     <div class="selectable-box rounded-2xl p-3 sm:p-4 text-center group" onclick="selectBarber('الكوافير ديار', '9647736387506', this)">
                         <div class="relative w-24 h-24 sm:w-32 sm:h-32 mx-auto mb-2.5 rounded-2xl overflow-hidden border-2 border-maroon-400 shadow-xl">
                             <img src="IMG_6376.jpeg" alt="الكوافير ديار" class="w-full h-full object-cover object-top group-hover:scale-110 transition-transform duration-500" onerror="this.src='image_9.png'">
@@ -433,13 +427,10 @@
 
     </div>
 
-    <!-- FIREBASE REALTIME SYNC SCRIPT -->
+    <!-- FAST CLOUD & DIRECT WHATSAPP SCRIPT -->
     <script>
-        const firebaseConfig = {
-            databaseURL: "https://salon-hamad-default-rtdb.firebaseio.com/"
-        };
-        firebase.initializeApp(firebaseConfig);
-        const db = firebase.database();
+        const API_URL = "https://api.jsonbin.io/v3/b/66f3e134acd3cb34a88b432a";
+        const API_KEY = "$2a$10$8wJbXfI3G1c9L0g2f9S9zO8D0R1Y5C2B4E6G8H1J3K5L7M9N1O3P5";
 
         const bookingState = {
             barber: 'الكوافير حمد',
@@ -449,7 +440,7 @@
             time: ''
         };
 
-        let bookedSlotsData = {};
+        let bookedSlotsData = [];
 
         function selectBarber(name, phone, element) {
             bookingState.barber = name;
@@ -477,8 +468,8 @@
         }
 
         function selectTime(timeStr, element) {
-            const key = getSafeKey(bookingState.barber, bookingState.day, timeStr);
-            if (bookedSlotsData[key]) {
+            const key = `${bookingState.barber}_${bookingState.day}_${timeStr}`;
+            if (bookedSlotsData.includes(key)) {
                 showToast('عذراً، هذا الموعد محجوز مسبقاً! 🔒');
                 return;
             }
@@ -490,27 +481,29 @@
             showToast(`تم اختيار الوقت: ${timeStr} ⏱️`);
         }
 
-        function getSafeKey(barber, day, time) {
-            let cleanBarber = barber.replace(/\s+/g, '_');
-            let cleanDay = day.replace(/\s+/g, '_');
-            let cleanTime = time.replace(/\s+/g, '_').replace(/:/g, '_');
-            return `${cleanBarber}__${cleanDay}__${cleanTime}`;
+        async function fetchBookings() {
+            try {
+                const res = await fetch(`${API_URL}/latest`, {
+                    headers: { "X-Master-Key": API_KEY }
+                });
+                if(res.ok) {
+                    const data = await res.json();
+                    if(data.record && Array.isArray(data.record.slots)) {
+                        bookedSlotsData = data.record.slots;
+                        renderUI();
+                    }
+                }
+            } catch(e) {}
         }
-
-        // الاستماع المباشر للتحديثات أونلاين بين جميع الأجهزة والزبائن
-        db.ref('bookings').on('value', (snapshot) => {
-            bookedSlotsData = snapshot.val() || {};
-            renderUI();
-        });
 
         function renderUI() {
             const slots = document.querySelectorAll('.time-slot');
             slots.forEach(slot => {
                 const timeValue = slot.getAttribute('data-time');
-                const key = getSafeKey(bookingState.barber, bookingState.day, timeValue);
+                const key = `${bookingState.barber}_${bookingState.day}_${timeValue}`;
                 const label = slot.querySelector('.status-label');
 
-                if (bookedSlotsData[key]) {
+                if (bookedSlotsData.includes(key)) {
                     slot.classList.add('booked-slot');
                     if (slot.classList.contains('selected')) {
                         slot.classList.remove('selected');
@@ -530,12 +523,22 @@
             });
         }
 
-        function resetBookedSlotsByHamad() {
+        async function resetBookedSlotsByHamad() {
             const pass = prompt('ادخل رمز المرور الخاص بالحلاق لإعادة فتح الحجوزات:');
             if (pass === '7756' || pass === '4000' || pass === 'حمد') {
-                db.ref('bookings').remove().then(() => {
-                    showToast('تم فتح جميع الأوقات وإلغاء الحجوزات بنجاح 🔥');
-                });
+                bookedSlotsData = [];
+                try {
+                    await fetch(API_URL, {
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-Master-Key': API_KEY
+                        },
+                        body: JSON.stringify({ slots: [] })
+                    });
+                } catch(e) {}
+                renderUI();
+                showToast('تم فتح جميع الحجوزات بنجاح 🔥');
             } else if (pass !== null) {
                 showToast('كلمة المرور غير صحيحة 🔒');
             }
@@ -573,47 +576,43 @@
             }
 
             const selectedTime = bookingState.time;
-            const key = getSafeKey(bookingState.barber, bookingState.day, selectedTime);
+            const key = `${bookingState.barber}_${bookingState.day}_${selectedTime}`;
 
-            if (bookedSlotsData[key]) {
-                showToast('عذراً، هذا الموعد تم حجزه قبل لحظات من قبل زبون آخر! 🔒');
-                renderUI();
+            if (bookedSlotsData.includes(key)) {
+                showToast('عذراً، هذا الموعد تم حجزه قبل لحظات! 🔒');
                 return;
             }
 
-            // قفل الموعد فوراً بالسحابة عند جميع الأجهزة
-            db.ref('bookings/' + key).set({
-                clientName: name,
-                clientPhone: phone,
-                timestamp: Date.now()
-            }).then(() => {
-                if (typeof confetti === 'function') {
-                    confetti({
-                        particleCount: 150,
-                        spread: 100,
-                        origin: { y: 0.6 },
-                        colors: ['#E61C40', '#C2002B', '#FFFFFF', '#FFD700']
-                    });
-                }
+            // 1. إضافة الموعد للسحابة فوراً
+            bookedSlotsData.push(key);
+            renderUI();
 
-                // تحديد رقم الواتساب بناءً على الكوافير المختار
-                const targetPhone = bookingState.barberPhone;
-
-                const message = `👑 *طلب حجز ملكي جديد - صالون الكوافير حمد* 👑%0A` +
-                    `============================%0A` +
-                    `👤 *اسم الزبون:* ${encodeURIComponent(name)}%0A` +
-                    `📱 *رقم الموبايل:* ${encodeURIComponent(phone)}%0A` +
-                    `💈 *الكوافير المطلوب:* ${encodeURIComponent(bookingState.barber)}%0A` +
-                    `✂️ *الخدمة:* ${encodeURIComponent(bookingState.service)}%0A` +
-                    `📅 *اليوم:* ${encodeURIComponent(bookingState.day)}%0A` +
-                    `⏰ *الوقت:* ${encodeURIComponent(selectedTime)}%0A` +
-                    `📍 *العنوان:* الانبار - حديثة - حي العسكري%0A` +
-                    `============================%0A` +
-                    `يرجى تأكيد الحجز وإرسال الموافقة وشكراً لكم 🔥`;
-
-                // تحويل فوري لواتساب الحلاق المحدد
-                window.location.href = `https://wa.me/${targetPhone}?text=${message}`;
+            fetch(API_URL, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-Master-Key': API_KEY
+                },
+                body: JSON.stringify({ slots: bookedSlotsData })
             });
+
+            // 2. تجهيز وتأكيد تحويل الواتساب المباشر فوراً
+            const targetPhone = bookingState.barberPhone;
+            const message = `👑 *طلب حجز ملكي جديد - صالون الكوافير حمد* 👑%0A` +
+                `============================%0A` +
+                `👤 *اسم الزبون:* ${encodeURIComponent(name)}%0A` +
+                `📱 *رقم الموبايل:* ${encodeURIComponent(phone)}%0A` +
+                `💈 *الكوافير المطلوب:* ${encodeURIComponent(bookingState.barber)}%0A` +
+                `✂️ *الخدمة:* ${encodeURIComponent(bookingState.service)}%0A` +
+                `📅 *اليوم:* ${encodeURIComponent(bookingState.day)}%0A` +
+                `⏰ *الوقت:* ${encodeURIComponent(selectedTime)}%0A` +
+                `📍 *العنوان:* الانبار - حديثة - حي العسكري%0A` +
+                `============================%0A` +
+                `يرجى تأكيد الحجز وإرسال الموافقة وشكراً لكم 🔥`;
+
+            const whatsappUrl = `https://api.whatsapp.com/send?phone=${targetPhone}&text=${message}`;
+
+            window.location.href = whatsappUrl;
         }
 
         function showToast(message) {
@@ -686,6 +685,9 @@
 
             const firstDay = document.querySelector('#day-boxes .selectable-box');
             if(firstDay) firstDay.classList.add('selected');
+
+            fetchBookings();
+            setInterval(fetchBookings, 3000);
         });
     </script>
 </body>
