@@ -142,7 +142,7 @@
 
         <div id="booking-form" class="space-y-8">
 
-            <!-- SECTION 1: BARBERS WITH SOCIAL LINKS -->
+            <!-- SECTION 1: BARBERS (WITHOUT SOCIAL ICONS) -->
             <section class="glass-card rounded-3xl p-4 sm:p-6 space-y-4 border-r-4 border-r-maroon-400">
                 <div class="flex items-center justify-between">
                     <h2 class="text-lg sm:text-2xl font-black font-changa text-white flex items-center gap-2 sm:gap-3">
@@ -158,11 +158,7 @@
                         <div class="relative w-24 h-24 sm:w-32 sm:h-32 mx-auto mb-2.5 rounded-2xl overflow-hidden border-2 border-maroon-400 shadow-xl">
                             <img src="449CCDB0-C779-4D78-AB90-D05FA10F3084.jpeg" alt="الكوافير حمد" class="w-full h-full object-cover object-top group-hover:scale-110 transition-transform duration-500" onerror="this.src='image_8.png'">
                         </div>
-                        <div class="font-black font-tajawal text-base sm:text-xl text-white mb-2">الكوافير حمد</div>
-                        <div class="flex justify-center items-center gap-2" onclick="event.stopPropagation()">
-                            <a href="https://instagram.com/a_lgi6" target="_blank" class="w-8 h-8 rounded-full bg-pink-900/60 border border-pink-500/40 flex items-center justify-center text-pink-300 hover:scale-110 transition-transform"><i class="fa-brands fa-instagram text-xs"></i></a>
-                            <a href="https://tiktok.com/@a_lgi6" target="_blank" class="w-8 h-8 rounded-full bg-gray-800 border border-gray-600 flex items-center justify-center text-white hover:scale-110 transition-transform"><i class="fa-brands fa-tiktok text-xs"></i></a>
-                        </div>
+                        <div class="font-black font-tajawal text-base sm:text-xl text-white">الكوافير حمد</div>
                     </div>
 
                     <!-- Barber 2: Diyar -->
@@ -170,11 +166,7 @@
                         <div class="relative w-24 h-24 sm:w-32 sm:h-32 mx-auto mb-2.5 rounded-2xl overflow-hidden border-2 border-maroon-400 shadow-xl">
                             <img src="IMG_6376.jpeg" alt="الكوافير ديار" class="w-full h-full object-cover object-top group-hover:scale-110 transition-transform duration-500" onerror="this.src='image_9.png'">
                         </div>
-                        <div class="font-black font-tajawal text-base sm:text-xl text-white mb-2">الكوافير ديار</div>
-                        <div class="flex justify-center items-center gap-2" onclick="event.stopPropagation()">
-                            <a href="https://instagram.com/a_lgi6" target="_blank" class="w-8 h-8 rounded-full bg-pink-900/60 border border-pink-500/40 flex items-center justify-center text-pink-300 hover:scale-110 transition-transform"><i class="fa-brands fa-instagram text-xs"></i></a>
-                            <a href="https://tiktok.com/@a_lgi6" target="_blank" class="w-8 h-8 rounded-full bg-gray-800 border border-gray-600 flex items-center justify-center text-white hover:scale-110 transition-transform"><i class="fa-brands fa-tiktok text-xs"></i></a>
-                        </div>
+                        <div class="font-black font-tajawal text-base sm:text-xl text-white">الكوافير ديار</div>
                     </div>
                 </div>
             </section>
@@ -484,14 +476,12 @@
             element.classList.add('selected');
         }
 
-        // إنشاء مفتاح فريد لكل حلاق ويوم ووقت لضمان الحفظ المباشر
         function getUniqueSlotKey(time) {
             return `${bookingState.barber}_${bookingState.day}_${time}`;
         }
 
         function getBookedSlots() {
             try {
-                // جلب جميع الحجوزات المسجلة للصالون
                 const bookings = JSON.parse(localStorage.getItem('hamad_all_salon_bookings') || '[]');
                 return bookings;
             } catch (e) {
@@ -508,7 +498,6 @@
                 const slotKey = getUniqueSlotKey(timeValue);
                 const label = slot.querySelector('.status-label');
 
-                // فحص ما إذا كان هذا الوقت محجوزاً لهذا الحلاق في هذا اليوم تحديداً
                 if (booked.includes(slotKey)) {
                     slot.classList.add('booked-slot');
                     if (slot.classList.contains('selected')) {
@@ -583,7 +572,6 @@
                 return;
             }
 
-            // قفل الموعد فوراً نهائياً
             lockSlotPermanently(bookingState.time);
 
             if (typeof confetti === 'function') {
@@ -630,7 +618,6 @@
             }, 3000);
         }
 
-        // Particle Canvas Background
         const canvas = document.getElementById('bg-canvas');
         const ctx = canvas.getContext('2d');
         let particles = [];
