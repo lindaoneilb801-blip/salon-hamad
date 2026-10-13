@@ -122,12 +122,12 @@
         <!-- HERO SECTION -->
         <header class="glass-card rounded-3xl overflow-hidden relative border-2 border-maroon-500 shadow-2xl">
             <div class="relative w-full overflow-hidden bg-black flex justify-center items-center">
-                <img src="Andalusi 2026-10-12 18.45.54.jpeg" alt="صالون الكوافير حمد" class="w-full h-auto object-contain max-h-[85vh] filter brightness-105 contrast-105">
+                <img src="Andalusi 2026-10-12 18.45.54.jpeg" alt="صالون الكوافير حمد" class="w-full h-auto object-contain max-h-[85vh] filter brightness-105 contrast-105" onerror="this.src='image_7.png'">
                 <div class="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-[#050203] via-[#050203]/70 to-transparent"></div>
             </div>
 
             <div class="p-5 sm:p-6 text-center relative z-20 space-y-4 -mt-12">
-                <div class="bg-black/80 backdrop-blur-md p-4 rounded-2xl border border-maroon-500/50 shadow-2xl space-y-2">
+                <div class="bg-black/80 backdrop-blur-md p-4 rounded-2xl border border-maroon-500/50 shadow-2xl">
                     <div class="flex justify-center items-center gap-2 text-xs text-gray-300 font-bold">
                         <i class="fa-solid fa-location-dot text-maroon-400 text-sm"></i>
                         <span>الانبار - حديثة - حي العسكري</span>
@@ -143,7 +143,7 @@
 
         <div id="booking-form" class="space-y-8">
 
-            <!-- SECTION 1: BARBERS -->
+            <!-- SECTION 1: BARBERS (SIDE BY SIDE - NO EXTRA PHRASES) -->
             <section class="glass-card rounded-3xl p-4 sm:p-6 space-y-4 border-r-4 border-r-maroon-400">
                 <div class="flex items-center justify-between">
                     <h2 class="text-lg sm:text-2xl font-black font-changa text-white flex items-center gap-2 sm:gap-3">
@@ -157,11 +157,500 @@
                     <!-- Barber 1: Hamad -->
                     <div class="selectable-box rounded-2xl p-3 sm:p-4 text-center group" onclick="selectBarber('الكوافير حمد', '+9647756534000', this)">
                         <div class="relative w-24 h-24 sm:w-32 sm:h-32 mx-auto mb-2.5 rounded-2xl overflow-hidden border-2 border-maroon-400 shadow-xl">
-                            <img src="449CCDB0-C779-4D78-AB90-D05FA10F3084.jpeg" alt="الكوافير حمد" class="w-full h-full object-cover object-top group-hover:scale-110 transition-transform duration-500">
+                            <img src="449CCDB0-C779-4D78-AB90-D05FA10F3084.jpeg" alt="الكوافير حمد" class="w-full h-full object-cover object-top group-hover:scale-110 transition-transform duration-500" onerror="this.src='image_8.png'">
                         </div>
                         <div class="font-black font-tajawal text-base sm:text-xl text-white">الكوافير حمد</div>
                     </div>
 
                     <!-- Barber 2: Diyar -->
                     <div class="selectable-box rounded-2xl p-3 sm:p-4 text-center group" onclick="selectBarber('الكوافير ديار', '+9647736387506', this)">
-                        <div class="relative w-24 h-24 sm:w-32 sm:h-32 mx-auto
+                        <div class="relative w-24 h-24 sm:w-32 sm:h-32 mx-auto mb-2.5 rounded-2xl overflow-hidden border-2 border-maroon-400 shadow-xl">
+                            <img src="IMG_6376.jpeg" alt="الكوافير ديار" class="w-full h-full object-cover object-top group-hover:scale-110 transition-transform duration-500" onerror="this.src='image_9.png'">
+                        </div>
+                        <div class="font-black font-tajawal text-base sm:text-xl text-white">الكوافير ديار</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECTION 2: SERVICES -->
+            <section class="glass-card rounded-3xl p-4 sm:p-6 space-y-4 border-r-4 border-r-maroon-500">
+                <div class="flex items-center justify-between">
+                    <h2 class="text-lg sm:text-2xl font-black font-changa text-white flex items-center gap-2 sm:gap-3">
+                        <i class="fa-solid fa-list-check text-maroon-400 text-xl sm:text-2xl"></i>
+                        ٢. اختر الخدمة ونوع الكصة
+                    </h2>
+                    <span class="text-[10px] sm:text-xs font-black text-maroon-300 bg-maroon-950/90 px-2.5 py-1 rounded-full border border-maroon-700">مطلوب *</span>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3" id="service-boxes">
+                    <div class="selectable-box rounded-2xl p-3.5 flex items-center justify-between" onclick="selectService('حلاقة كاملة (10,000 د.ع)', this)">
+                        <div>
+                            <div class="font-black font-tajawal text-white text-sm sm:text-base">حلاقة كاملة</div>
+                            <div class="text-xs text-gray-300 font-bold mt-1 flex items-center gap-2">
+                                <span class="text-maroon-300 font-black">10,000 د.ع</span> • <span>⏱️ ساعة</span>
+                            </div>
+                        </div>
+                        <i class="fa-solid fa-scissors text-maroon-400 text-lg"></i>
+                    </div>
+
+                    <div class="selectable-box rounded-2xl p-3.5 flex items-center justify-between" onclick="selectService('تحديد خيط أو شمع (5,000 د.ع)', this)">
+                        <div>
+                            <div class="font-black font-tajawal text-white text-sm sm:text-base">تحديد خيط أو شمع</div>
+                            <div class="text-xs text-gray-300 font-bold mt-1 flex items-center gap-2">
+                                <span class="text-maroon-300 font-black">5,000 د.ع</span> • <span>⏱️ 30 دقيقة</span>
+                            </div>
+                        </div>
+                        <i class="fa-solid fa-wand-magic-sparkles text-maroon-400 text-lg"></i>
+                    </div>
+
+                    <div class="selectable-box rounded-2xl p-3.5 flex items-center justify-between" onclick="selectService('حلاقة أطفال (5,000 د.ع)', this)">
+                        <div>
+                            <div class="font-black font-tajawal text-white text-sm sm:text-base">حلاقة أطفال</div>
+                            <div class="text-xs text-gray-300 font-bold mt-1 flex items-center gap-2">
+                                <span class="text-maroon-300 font-black">5,000 د.ع</span> • <span>⏱️ 30 دقيقة</span>
+                            </div>
+                        </div>
+                        <i class="fa-solid fa-child text-maroon-400 text-lg"></i>
+                    </div>
+
+                    <div class="selectable-box rounded-2xl p-3.5 flex items-center justify-between" onclick="selectService('سشوار (3,000 د.ع)', this)">
+                        <div>
+                            <div class="font-black font-tajawal text-white text-sm sm:text-base">سشوار وتصفيف</div>
+                            <div class="text-xs text-gray-300 font-bold mt-1 flex items-center gap-2">
+                                <span class="text-maroon-300 font-black">3,000 د.ع</span> • <span>⏱️ 10 دقائق</span>
+                            </div>
+                        </div>
+                        <i class="fa-solid fa-wind text-maroon-400 text-lg"></i>
+                    </div>
+
+                    <div class="selectable-box rounded-2xl p-3.5 flex items-center justify-between" onclick="selectService('تنظيف بشرة HydroFacial (10,000 د.ع)', this)">
+                        <div>
+                            <div class="font-black font-tajawal text-white text-sm sm:text-base">تنظيف بشرة HydroFacial</div>
+                            <div class="text-xs text-gray-300 font-bold mt-1 flex items-center gap-2">
+                                <span class="text-maroon-300 font-black">10,000 د.ع</span> • <span>⏱️ ساعة</span>
+                            </div>
+                        </div>
+                        <i class="fa-solid fa-droplet text-maroon-400 text-lg"></i>
+                    </div>
+
+                    <div class="selectable-box rounded-2xl p-3.5 flex items-center justify-between border-maroon-400 bg-gradient-to-r from-maroon-950 to-black" onclick="selectService('تنظيف بشرة — جلسة ملكية (15,000 د.ع)', this)">
+                        <div>
+                            <div class="font-black font-tajawal text-gold text-sm sm:text-base">تنظيف بشرة — جلسة ملكية 👑</div>
+                            <div class="text-xs text-gray-200 font-bold mt-1 flex items-center gap-2">
+                                <span class="text-maroon-300 font-black">15,000 د.ع</span> • <span>⏱️ ساعة</span>
+                            </div>
+                        </div>
+                        <i class="fa-solid fa-crown text-gold text-lg"></i>
+                    </div>
+
+                    <div class="selectable-box rounded-2xl p-3.5 flex items-center justify-between" onclick="selectService('كرياتين (50,000 د.ع)', this)">
+                        <div>
+                            <div class="font-black font-tajawal text-white text-sm sm:text-base">كرياتين معالج</div>
+                            <div class="text-xs text-gray-300 font-bold mt-1 flex items-center gap-2">
+                                <span class="text-maroon-300 font-black">50,000 د.ع</span> • <span>⏱️ ساعتين</span>
+                            </div>
+                        </div>
+                        <i class="fa-solid fa-sparkles text-maroon-400 text-lg"></i>
+                    </div>
+
+                    <div class="selectable-box rounded-2xl p-3.5 flex items-center justify-between" onclick="selectService('بروتين (75,000 د.ع)', this)">
+                        <div>
+                            <div class="font-black font-tajawal text-white text-sm sm:text-base">بروتين ملكي</div>
+                            <div class="text-xs text-gray-300 font-bold mt-1 flex items-center gap-2">
+                                <span class="text-maroon-300 font-black">75,000 د.ع</span> • <span>⏱️ ساعتين</span>
+                            </div>
+                        </div>
+                        <i class="fa-solid fa-shield-halved text-maroon-400 text-lg"></i>
+                    </div>
+
+                    <div class="selectable-box rounded-2xl p-3.5 flex items-center justify-between" onclick="selectService('معالج شعر / مسرح مؤقت (5,000 د.ع)', this)">
+                        <div>
+                            <div class="font-black font-tajawal text-white text-sm sm:text-base">معالج شعر / مسرح مؤقت</div>
+                            <div class="text-xs text-gray-300 font-bold mt-1 flex items-center gap-2">
+                                <span class="text-maroon-300 font-black">5,000 د.ع</span> • <span>⏱️ 5 دقائق</span>
+                            </div>
+                        </div>
+                        <i class="fa-solid fa-bolt text-maroon-400 text-lg"></i>
+                    </div>
+
+                    <div class="selectable-box rounded-2xl p-3.5 flex items-center justify-between" onclick="selectService('كيرلي (50,000 د.ع)', this)">
+                        <div>
+                            <div class="font-black font-tajawal text-white text-sm sm:text-base">كيرلي خاص</div>
+                            <div class="text-xs text-gray-300 font-bold mt-1 flex items-center gap-2">
+                                <span class="text-maroon-300 font-black">50,000 د.ع</span> • <span>⏱️ ساعتين</span>
+                            </div>
+                        </div>
+                        <i class="fa-solid fa-arrows-spin text-maroon-400 text-lg"></i>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECTION 3: DAYS OF THE WEEK -->
+            <section class="glass-card rounded-3xl p-4 sm:p-6 space-y-4 border-r-4 border-r-maroon-400">
+                <div class="flex items-center justify-between">
+                    <h2 class="text-lg sm:text-2xl font-black font-changa text-white flex items-center gap-2 sm:gap-3">
+                        <i class="fa-regular fa-calendar-days text-maroon-400 text-xl sm:text-2xl"></i>
+                        ٣. اختر اليوم
+                    </h2>
+                    <span class="text-[10px] sm:text-xs font-black text-maroon-300 bg-maroon-950/90 px-2.5 py-1 rounded-full border border-maroon-700">مطلوب *</span>
+                </div>
+
+                <div class="grid grid-cols-4 sm:grid-cols-7 gap-2" id="day-boxes">
+                    <div class="selectable-box rounded-xl py-3 text-center" onclick="selectDay('السبت', this)"><div class="text-xs sm:text-sm font-black font-tajawal text-white">السبت</div></div>
+                    <div class="selectable-box rounded-xl py-3 text-center" onclick="selectDay('الأحد', this)"><div class="text-xs sm:text-sm font-black font-tajawal text-white">الأحد</div></div>
+                    <div class="selectable-box rounded-xl py-3 text-center" onclick="selectDay('الاثنين', this)"><div class="text-xs sm:text-sm font-black font-tajawal text-white">الاثنين</div></div>
+                    <div class="selectable-box rounded-xl py-3 text-center" onclick="selectDay('الثلاثاء', this)"><div class="text-xs sm:text-sm font-black font-tajawal text-white">الثلاثاء</div></div>
+                    <div class="selectable-box rounded-xl py-3 text-center" onclick="selectDay('الأربعاء', this)"><div class="text-xs sm:text-sm font-black font-tajawal text-white">الأربعاء</div></div>
+                    <div class="selectable-box rounded-xl py-3 text-center" onclick="selectDay('الخميس', this)"><div class="text-xs sm:text-sm font-black font-tajawal text-white">الخميس</div></div>
+                    <div class="selectable-box rounded-xl py-3 text-center col-span-2 sm:col-span-1 border-maroon-400 bg-maroon-900/40" onclick="selectDay('الجمعة', this)"><div class="text-xs sm:text-sm font-black font-tajawal text-maroon-300">الجمعة 🔥</div></div>
+                </div>
+            </section>
+
+            <!-- SECTION 4: TIME SLOTS -->
+            <section class="glass-card rounded-3xl p-4 sm:p-6 space-y-4 border-r-4 border-r-maroon-500">
+                <div class="flex items-center justify-between flex-wrap gap-2">
+                    <div>
+                        <h2 class="text-base sm:text-2xl font-black font-changa text-white flex items-center gap-2">
+                            <i class="fa-regular fa-clock text-maroon-400 text-lg sm:text-2xl"></i>
+                            ٤. اختر الوقت (من 3 عصراً إلى 1 ليلاً)
+                        </h2>
+                        <p class="text-[11px] sm:text-xs text-gray-400 font-bold mt-0.5">الموعد المحجوز يتم إغلاقه تلقائياً 🔒</p>
+                    </div>
+
+                    <button onclick="resetBookedSlotsByHamad()" class="text-[11px] sm:text-xs bg-maroon-900/80 hover:bg-maroon-700 text-maroon-200 border border-maroon-500 px-3 py-1.5 rounded-xl font-bold flex items-center gap-1.5 transition-all">
+                        <i class="fa-solid fa-lock text-maroon-300"></i>
+                        <span>إعادة فتح الحجوزات (الكوافير حمد)</span>
+                    </button>
+                </div>
+
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5" id="time-boxes">
+                    <div class="selectable-box rounded-xl p-2.5 text-center time-slot" data-time="3:00 عصراً" onclick="selectTime('3:00 عصراً', this)">
+                        <div class="text-xs sm:text-sm font-black font-cairo text-gray-100">3:00 عصراً</div>
+                        <span class="status-label text-[9px] text-emerald-400 font-bold block mt-0.5">متاح 🟢</span>
+                    </div>
+                    <div class="selectable-box rounded-xl p-2.5 text-center time-slot" data-time="4:00 عصراً" onclick="selectTime('4:00 عصراً', this)">
+                        <div class="text-xs sm:text-sm font-black font-cairo text-gray-100">4:00 عصراً</div>
+                        <span class="status-label text-[9px] text-emerald-400 font-bold block mt-0.5">متاح 🟢</span>
+                    </div>
+                    <div class="selectable-box rounded-xl p-2.5 text-center time-slot" data-time="5:00 عصراً" onclick="selectTime('5:00 عصراً', this)">
+                        <div class="text-xs sm:text-sm font-black font-cairo text-gray-100">5:00 عصراً</div>
+                        <span class="status-label text-[9px] text-emerald-400 font-bold block mt-0.5">متاح 🟢</span>
+                    </div>
+                    <div class="selectable-box rounded-xl p-2.5 text-center time-slot" data-time="6:00 مساءً" onclick="selectTime('6:00 مساءً', this)">
+                        <div class="text-xs sm:text-sm font-black font-cairo text-gray-100">6:00 مساءً</div>
+                        <span class="status-label text-[9px] text-emerald-400 font-bold block mt-0.5">متاح 🟢</span>
+                    </div>
+                    <div class="selectable-box rounded-xl p-2.5 text-center time-slot" data-time="7:00 مساءً" onclick="selectTime('7:00 مساءً', this)">
+                        <div class="text-xs sm:text-sm font-black font-cairo text-gray-100">7:00 مساءً</div>
+                        <span class="status-label text-[9px] text-emerald-400 font-bold block mt-0.5">متاح 🟢</span>
+                    </div>
+                    <div class="selectable-box rounded-xl p-2.5 text-center time-slot" data-time="8:00 مساءً" onclick="selectTime('8:00 مساءً', this)">
+                        <div class="text-xs sm:text-sm font-black font-cairo text-gray-100">8:00 مساءً</div>
+                        <span class="status-label text-[9px] text-emerald-400 font-bold block mt-0.5">متاح 🟢</span>
+                    </div>
+                    <div class="selectable-box rounded-xl p-2.5 text-center time-slot" data-time="9:00 مساءً" onclick="selectTime('9:00 مساءً', this)">
+                        <div class="text-xs sm:text-sm font-black font-cairo text-gray-100">9:00 مساءً</div>
+                        <span class="status-label text-[9px] text-emerald-400 font-bold block mt-0.5">متاح 🟢</span>
+                    </div>
+                    <div class="selectable-box rounded-xl p-2.5 text-center time-slot" data-time="10:00 مساءً" onclick="selectTime('10:00 مساءً', this)">
+                        <div class="text-xs sm:text-sm font-black font-cairo text-gray-100">10:00 مساءً</div>
+                        <span class="status-label text-[9px] text-emerald-400 font-bold block mt-0.5">متاح 🟢</span>
+                    </div>
+                    <div class="selectable-box rounded-xl p-2.5 text-center time-slot" data-time="11:00 ليلاً" onclick="selectTime('11:00 ليلاً', this)">
+                        <div class="text-xs sm:text-sm font-black font-cairo text-gray-100">11:00 ليلاً</div>
+                        <span class="status-label text-[9px] text-emerald-400 font-bold block mt-0.5">متاح 🟢</span>
+                    </div>
+                    <div class="selectable-box rounded-xl p-2.5 text-center time-slot" data-time="12:00 منتصف الليل" onclick="selectTime('12:00 منتصف الليل', this)">
+                        <div class="text-xs sm:text-sm font-black font-cairo text-gray-100">12:00 بالليل</div>
+                        <span class="status-label text-[9px] text-emerald-400 font-bold block mt-0.5">متاح 🟢</span>
+                    </div>
+                    <div class="selectable-box rounded-xl p-2.5 text-center time-slot col-span-2 border-maroon-400" data-time="1:00 ليلاً" onclick="selectTime('1:00 ليلاً', this)">
+                        <div class="text-xs sm:text-sm font-black font-cairo text-maroon-300">1:00 ليلاً 🔥</div>
+                        <span class="status-label text-[9px] text-emerald-400 font-bold block mt-0.5">متاح 🟢</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECTION 5: CLIENT INFO -->
+            <section class="glass-card rounded-3xl p-4 sm:p-6 space-y-4 border-r-4 border-r-maroon-400">
+                <h2 class="text-lg sm:text-2xl font-black font-changa text-white flex items-center gap-2 sm:gap-3">
+                    <i class="fa-solid fa-id-card text-maroon-400 text-xl sm:text-2xl"></i>
+                    ٥. معلومات الزبون
+                </h2>
+
+                <div class="space-y-3 sm:space-y-4">
+                    <div>
+                        <label class="block text-xs sm:text-sm font-black font-tajawal text-gray-200 mb-1.5">اسم الزبون الكريم:</label>
+                        <div class="relative">
+                            <input type="text" id="client-name" placeholder="أدخل اسمك الكريم الثلاثي..." class="w-full bg-[#080204] border-2 border-maroon-700/60 rounded-2xl px-4 py-3.5 pr-11 text-xs sm:text-base font-bold text-white placeholder-gray-500 focus:outline-none focus:border-maroon-400 transition-all">
+                            <i class="fa-solid fa-user absolute top-3.5 sm:top-4 right-3.5 text-maroon-400 text-base"></i>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs sm:text-sm font-black font-tajawal text-gray-200 mb-1.5">رقم الموبايل / الواتساب:</label>
+                        <div class="relative">
+                            <input type="tel" id="client-phone" placeholder="07XXXXXXXXX" class="w-full bg-[#080204] border-2 border-maroon-700/60 rounded-2xl px-4 py-3.5 pr-11 text-xs sm:text-base font-bold text-white placeholder-gray-500 focus:outline-none focus:border-maroon-400 transition-all text-left" dir="ltr">
+                            <i class="fa-solid fa-phone absolute top-3.5 sm:top-4 right-3.5 text-maroon-400 text-base"></i>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SUBMIT BUTTON -->
+            <div>
+                <button onclick="submitBooking()" class="w-full btn-flame rounded-2xl py-4 sm:py-5 px-6 flex items-center justify-center gap-3 text-lg sm:text-2xl font-black font-changa text-white cursor-pointer border-2 border-maroon-300/40">
+                    <i class="fa-brands fa-whatsapp text-2xl sm:text-3xl animate-bounce"></i>
+                    <span>تثبيت الحجز الملكي عبر الواتساب 🔥</span>
+                </button>
+            </div>
+
+        </div>
+
+        <!-- FOOTER & DESIGNER CREDITS -->
+        <footer class="glass-card rounded-3xl p-5 text-center space-y-3 border-t-2 border-t-maroon-500 font-cairo">
+            <div class="space-y-1">
+                <p class="text-sm sm:text-base font-black text-white">👑 صالون الكوافير حمد 👑</p>
+                <p class="text-xs font-bold text-maroon-300">العنوان: الانبار - حديثة - حي العسكري</p>
+            </div>
+
+            <div class="w-20 h-0.5 bg-gradient-to-r from-transparent via-maroon-500 to-transparent mx-auto"></div>
+
+            <div class="bg-black/60 p-3.5 rounded-2xl border border-maroon-800/80 space-y-2">
+                <p class="text-xs font-black text-gray-300">
+                    ✨ تم التصميم بواسطة: <span class="text-maroon-400 font-bold">المصمم علي حسين علي</span> ✨
+                </p>
+                
+                <a href="https://instagram.com/a_lgi6" target="_blank" class="inline-flex items-center gap-2 bg-gradient-to-r from-purple-900/60 via-pink-900/60 to-maroon-900/60 px-3.5 py-1.5 rounded-xl border border-pink-500/40 text-xs font-black text-pink-300 hover:scale-105 transition-transform">
+                    <i class="fa-brands fa-instagram text-sm text-pink-400"></i>
+                    <span>a_lgi6@</span>
+                </a>
+            </div>
+        </footer>
+
+    </div>
+
+    <!-- SCRIPT LOGIC -->
+    <script>
+        const bookingState = {
+            barber: '',
+            barberPhone: '',
+            service: '',
+            day: '',
+            time: ''
+        };
+
+        function selectBarber(name, phone, element) {
+            bookingState.barber = name;
+            bookingState.barberPhone = phone;
+
+            const parent = element.parentElement;
+            parent.querySelectorAll('.selectable-box').forEach(el => el.classList.remove('selected'));
+            element.classList.add('selected');
+        }
+
+        function selectService(serviceName, element) {
+            bookingState.service = serviceName;
+
+            const parent = element.parentElement;
+            parent.querySelectorAll('.selectable-box').forEach(el => el.classList.remove('selected'));
+            element.classList.add('selected');
+        }
+
+        function selectDay(dayName, element) {
+            bookingState.day = dayName;
+
+            const parent = element.parentElement;
+            parent.querySelectorAll('.selectable-box').forEach(el => el.classList.remove('selected'));
+            element.classList.add('selected');
+        }
+
+        function selectTime(timeStr, element) {
+            if (element.classList.contains('booked-slot')) {
+                showToast('هذا الموعد محجوز مسبقاً! 🔒');
+                return;
+            }
+
+            bookingState.time = timeStr;
+
+            const parent = element.parentElement;
+            parent.querySelectorAll('.selectable-box').forEach(el => el.classList.remove('selected'));
+            element.classList.add('selected');
+        }
+
+        function getBookedSlots() {
+            return JSON.parse(localStorage.getItem('hamad_booked_slots') || '[]');
+        }
+
+        function renderBookedSlots() {
+            const booked = getBookedSlots();
+            const slots = document.querySelectorAll('.time-slot');
+
+            slots.forEach(slot => {
+                const timeValue = slot.getAttribute('data-time');
+                const label = slot.querySelector('.status-label');
+
+                if (booked.includes(timeValue)) {
+                    slot.classList.add('booked-slot');
+                    slot.classList.remove('selected');
+                    if (label) {
+                        label.textContent = 'محجوز 🔒';
+                        label.className = 'status-label text-[9px] text-rose-500 font-bold block mt-0.5';
+                    }
+                } else {
+                    slot.classList.remove('booked-slot');
+                    if (label) {
+                        label.textContent = 'متاح 🟢';
+                        label.className = 'status-label text-[9px] text-emerald-400 font-bold block mt-0.5';
+                    }
+                }
+            });
+        }
+
+        function lockSlot(timeValue) {
+            const booked = getBookedSlots();
+            if (!booked.includes(timeValue)) {
+                booked.push(timeValue);
+                localStorage.setItem('hamad_booked_slots', JSON.stringify(booked));
+            }
+            renderBookedSlots();
+        }
+
+        function resetBookedSlotsByHamad() {
+            const pass = prompt('ادخل رمز المرور الخاص بالكوافير حمد لفتح الحجوزات:');
+            if (pass === '7756' || pass === '4000' || pass === 'حمد') {
+                localStorage.removeItem('hamad_booked_slots');
+                renderBookedSlots();
+                showToast('تم إعادة فتح جميع الحجوزات بنجاح 🔥');
+            } else if (pass !== null) {
+                showToast('عذراً، هذا الخيار مخصص للكوافير حمد فقط 🔒');
+            }
+        }
+
+        function submitBooking() {
+            const name = document.getElementById('client-name').value.trim();
+            const phone = document.getElementById('client-phone').value.trim();
+
+            if (!bookingState.barber) {
+                showToast('يرجى اختيار الكوافير المفضل أولاً ✂️');
+                return;
+            }
+            if (!bookingState.service) {
+                showToast('يرجى اختيار نوع الكصة أو الخدمة 💈');
+                return;
+            }
+            if (!bookingState.day) {
+                showToast('يرجى اختيار اليوم المناسب 📅');
+                return;
+            }
+            if (!bookingState.time) {
+                showToast('يرجى اختيار وقت الموعد ⏰');
+                return;
+            }
+            if (!name) {
+                showToast('يرجى ادخال اسم الزبون الكريم 👤');
+                document.getElementById('client-name').focus();
+                return;
+            }
+            if (!phone) {
+                showToast('يرجى ادخال رقم الموبايل 📱');
+                document.getElementById('client-phone').focus();
+                return;
+            }
+
+            if (typeof confetti === 'function') {
+                confetti({
+                    particleCount: 150,
+                    spread: 100,
+                    origin: { y: 0.6 },
+                    colors: ['#E61C40', '#C2002B', '#FFFFFF', '#FFD700']
+                });
+            }
+
+            lockSlot(bookingState.time);
+
+            const targetPhone = bookingState.barberPhone || '+9647756534000';
+
+            const message = `👑 *طلب حجز ملكي جديد - صالون الكوافير حمد* 👑%0A` +
+                `============================%0A` +
+                `👤 *اسم الزبون:* ${encodeURIComponent(name)}%0A` +
+                `📱 *رقم الموبايل:* ${encodeURIComponent(phone)}%0A` +
+                `💈 *الكوافير المطلوب:* ${encodeURIComponent(bookingState.barber)}%0A` +
+                `✂️ *الخدمة:* ${encodeURIComponent(bookingState.service)}%0A` +
+                `📅 *اليوم:* ${encodeURIComponent(bookingState.day)}%0A` +
+                `⏰ *الوقت:* ${encodeURIComponent(bookingState.time)}%0A` +
+                `📍 *العنوان:* الانبار - حديثة - حي العسكري%0A` +
+                `============================%0A` +
+                `يرجى تأكيد الحجز وإرسال الموافقة وشكراً لكم 🔥`;
+
+            setTimeout(() => {
+                window.open(`https://wa.me/${targetPhone}?text=${message}`, '_blank');
+            }, 500);
+        }
+
+        function showToast(message) {
+            let toast = document.getElementById('custom-toast');
+            if (!toast) {
+                toast = document.createElement('div');
+                toast.id = 'custom-toast';
+                toast.className = 'fixed bottom-6 left-1/2 -translate-x-1/2 z-50 bg-maroon-900 text-white font-black font-tajawal text-xs sm:text-sm px-5 py-3 rounded-2xl border-2 border-maroon-400 flex items-center gap-2 transition-all duration-300 opacity-0 pointer-events-none shadow-2xl';
+                document.body.appendChild(toast);
+            }
+            toast.innerHTML = `<i class="fa-solid fa-circle-exclamation text-amber-300 text-base"></i> <span>${message}</span>`;
+            toast.classList.remove('opacity-0', 'pointer-events-none');
+
+            setTimeout(() => {
+                toast.classList.add('opacity-0', 'pointer-events-none');
+            }, 3000);
+        }
+
+        // Particle Canvas
+        const canvas = document.getElementById('bg-canvas');
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        class Particle {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.size = Math.random() * 2 + 0.5;
+                this.speedY = Math.random() * -0.5 - 0.2;
+                this.speedX = (Math.random() - 0.5) * 0.3;
+                this.opacity = Math.random() * 0.6 + 0.2;
+            }
+            update() {
+                this.y += this.speedY;
+                this.x += this.speedX;
+                if (this.y < 0) {
+                    this.y = canvas.height;
+                    this.x = Math.random() * canvas.width;
+                }
+            }
+            draw() {
+                ctx.fillStyle = `rgba(230, 28, 64, ${this.opacity})`;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        for (let i = 0; i < 35; i++) particles.push(new Particle());
+
+        function animateParticles() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            particles.forEach(p => { p.update(); p.draw(); });
+            requestAnimationFrame(animateParticles);
+        }
+        animateParticles();
+
+        document.addEventListener('DOMContentLoaded', renderBookedSlots);
+    </script>
+</body>
+</html>
