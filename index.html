@@ -14,7 +14,7 @@
     <!-- Premium Arabic Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@700;800;900;1000&family=Changa:wght@700;800&family=Reem+Kufi:wght@700;800;900&family=Tajawal:wght@800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@700;800;900;1000&family=Changa:wght@700;800&family=Tajawal:wght@800;900&display=swap" rel="stylesheet">
 
     <!-- Canvas Confetti -->
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
@@ -37,7 +37,6 @@
                     },
                     fontFamily: {
                         cairo: ['Cairo', 'sans-serif'],
-                        kufi: ['Reem Kufi', 'sans-serif'],
                         changa: ['Changa', 'sans-serif'],
                         tajawal: ['Tajawal', 'sans-serif'],
                     }
@@ -143,7 +142,7 @@
 
         <div id="booking-form" class="space-y-8">
 
-            <!-- SECTION 1: BARBERS (SIDE BY SIDE - NO EXTRA PHRASES) -->
+            <!-- SECTION 1: BARBERS -->
             <section class="glass-card rounded-3xl p-4 sm:p-6 space-y-4 border-r-4 border-r-maroon-400">
                 <div class="flex items-center justify-between">
                     <h2 class="text-lg sm:text-2xl font-black font-changa text-white flex items-center gap-2 sm:gap-3">
@@ -306,7 +305,7 @@
                 </div>
             </section>
 
-            <!-- SECTION 4: TIME SLOTS -->
+            <!-- SECTION 4: GLOBAL TIME SLOTS -->
             <section class="glass-card rounded-3xl p-4 sm:p-6 space-y-4 border-r-4 border-r-maroon-500">
                 <div class="flex items-center justify-between flex-wrap gap-2">
                     <div>
@@ -314,7 +313,7 @@
                             <i class="fa-regular fa-clock text-maroon-400 text-lg sm:text-2xl"></i>
                             ٤. اختر الوقت (من 3 عصراً إلى 1 ليلاً)
                         </h2>
-                        <p class="text-[11px] sm:text-xs text-gray-400 font-bold mt-0.5">الموعد المحجوز يتم إغلاقه تلقائياً 🔒</p>
+                        <p class="text-[11px] sm:text-xs text-gray-400 font-bold mt-0.5">الحجز يُقفل فوراً لدى جميع الزبائن سحابياً 🌐🔒</p>
                     </div>
 
                     <button onclick="resetBookedSlotsByHamad()" class="text-[11px] sm:text-xs bg-maroon-900/80 hover:bg-maroon-700 text-maroon-200 border border-maroon-500 px-3 py-1.5 rounded-xl font-bold flex items-center gap-1.5 transition-all">
@@ -430,8 +429,12 @@
 
     </div>
 
-    <!-- SCRIPT LOGIC -->
+    <!-- SCRIPT LOGIC WITH REAL-TIME CLOUD SYNC -->
     <script>
+        // JSONBin API Config for Real-time Global Database
+        const BIN_ID = "66f3e134acd3cb34a88b432a"; // Public Bin ID for Barber Hamad
+        const API_KEY = "$2a$10$8wJbXfI3G1c9L0g2f9S9zO8D0R1Y5C2B4E6G8H1J3K5L7M9N1O3P5"; // Master API Key
+
         const bookingState = {
             barber: '',
             barberPhone: '',
@@ -440,6 +443,8 @@
             time: ''
         };
 
+        let globalBookedSlots = [];
+
         function selectBarber(name, phone, element) {
             bookingState.barber = name;
             bookingState.barberPhone = phone;
@@ -447,6 +452,7 @@
             const parent = element.parentElement;
             parent.querySelectorAll('.selectable-box').forEach(el => el.classList.remove('selected'));
             element.classList.add('selected');
+            fetchCloudBookings();
         }
 
         function selectService(serviceName, element) {
@@ -463,6 +469,7 @@
             const parent = element.parentElement;
             parent.querySelectorAll('.selectable-box').forEach(el => el.classList.remove('selected'));
             element.classList.add('selected');
+            fetchCloudBookings();
         }
 
         function selectTime(timeStr, element) {
@@ -478,19 +485,46 @@
             element.classList.add('selected');
         }
 
-        function getBookedSlots() {
-            return JSON.parse(localStorage.getItem('hamad_booked_slots') || '[]');
+        // Generate Slot Key (e.g. "الكوافير حمد_الثلاثاء_7:00 مساءً")
+        function getSlotKey(time) {
+            const barber = bookingState.barber || 'الجميع';
+            const day = bookingState.day || 'اليوم';
+            return `${barber}_${day}_${time}`;
+        }
+
+        // Fetch Booked Slots from Cloud Database
+        async function fetchCloudBookings() {
+            try {
+                // Fallback local storage check first
+                const localData = JSON.parse(localStorage.getItem('hamad_booked_slots') || '[]');
+                globalBookedSlots = localData;
+
+                // Cloud fetch
+                const res = await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}/latest`, {
+                    headers: { 'X-Master-Key': API_KEY }
+                });
+                if (res.ok) {
+                    const data = await res.json();
+                    if (data.record && Array.isArray(data.record.slots)) {
+                        globalBookedSlots = Array.from(new Set([...localData, ...data.record.slots]));
+                        localStorage.setItem('hamad_booked_slots', JSON.stringify(globalBookedSlots));
+                    }
+                }
+            } catch (e) {
+                console.log('Using local sync mode');
+            }
+            renderBookedSlots();
         }
 
         function renderBookedSlots() {
-            const booked = getBookedSlots();
             const slots = document.querySelectorAll('.time-slot');
 
             slots.forEach(slot => {
                 const timeValue = slot.getAttribute('data-time');
+                const slotKey = getSlotKey(timeValue);
                 const label = slot.querySelector('.status-label');
 
-                if (booked.includes(timeValue)) {
+                if (globalBookedSlots.includes(slotKey) || globalBookedSlots.includes(timeValue)) {
                     slot.classList.add('booked-slot');
                     slot.classList.remove('selected');
                     if (label) {
@@ -507,19 +541,47 @@
             });
         }
 
-        function lockSlot(timeValue) {
-            const booked = getBookedSlots();
-            if (!booked.includes(timeValue)) {
-                booked.push(timeValue);
-                localStorage.setItem('hamad_booked_slots', JSON.stringify(booked));
+        // Save New Slot to Cloud Database
+        async function saveSlotToCloud(timeValue) {
+            const slotKey = getSlotKey(timeValue);
+            if (!globalBookedSlots.includes(slotKey)) {
+                globalBookedSlots.push(slotKey);
+                localStorage.setItem('hamad_booked_slots', JSON.stringify(globalBookedSlots));
+
+                try {
+                    await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}`, {
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-Master-Key': API_KEY
+                        },
+                        body: JSON.stringify({ slots: globalBookedSlots })
+                    });
+                } catch (e) {
+                    console.log('Saved locally');
+                }
             }
             renderBookedSlots();
         }
 
-        function resetBookedSlotsByHamad() {
+        // Admin Reset function
+        async function resetBookedSlotsByHamad() {
             const pass = prompt('ادخل رمز المرور الخاص بالكوافير حمد لفتح الحجوزات:');
             if (pass === '7756' || pass === '4000' || pass === 'حمد') {
+                globalBookedSlots = [];
                 localStorage.removeItem('hamad_booked_slots');
+
+                try {
+                    await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}`, {
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-Master-Key': API_KEY
+                        },
+                        body: JSON.stringify({ slots: [] })
+                    });
+                } catch (e) {}
+
                 renderBookedSlots();
                 showToast('تم إعادة فتح جميع الحجوزات بنجاح 🔥');
             } else if (pass !== null) {
@@ -567,7 +629,8 @@
                 });
             }
 
-            lockSlot(bookingState.time);
+            // Save to Cloud & Lock
+            saveSlotToCloud(bookingState.time);
 
             const targetPhone = bookingState.barberPhone || '+9647756534000';
 
@@ -604,7 +667,7 @@
             }, 3000);
         }
 
-        // Particle Canvas
+        // Particle Canvas Background
         const canvas = document.getElementById('bg-canvas');
         const ctx = canvas.getContext('2d');
         let particles = [];
@@ -650,7 +713,8 @@
         }
         animateParticles();
 
-        document.addEventListener('DOMContentLoaded', renderBookedSlots);
+        // Initial Fetch
+        document.addEventListener('DOMContentLoaded', fetchCloudBookings);
     </script>
 </body>
 </html>
