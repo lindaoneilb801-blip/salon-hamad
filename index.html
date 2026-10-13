@@ -142,7 +142,7 @@
 
         <div id="booking-form" class="space-y-8">
 
-            <!-- SECTION 1: BARBERS -->
+            <!-- SECTION 1: BARBERS WITH SOCIAL LINKS -->
             <section class="glass-card rounded-3xl p-4 sm:p-6 space-y-4 border-r-4 border-r-maroon-400">
                 <div class="flex items-center justify-between">
                     <h2 class="text-lg sm:text-2xl font-black font-changa text-white flex items-center gap-2 sm:gap-3">
@@ -158,7 +158,11 @@
                         <div class="relative w-24 h-24 sm:w-32 sm:h-32 mx-auto mb-2.5 rounded-2xl overflow-hidden border-2 border-maroon-400 shadow-xl">
                             <img src="449CCDB0-C779-4D78-AB90-D05FA10F3084.jpeg" alt="الكوافير حمد" class="w-full h-full object-cover object-top group-hover:scale-110 transition-transform duration-500" onerror="this.src='image_8.png'">
                         </div>
-                        <div class="font-black font-tajawal text-base sm:text-xl text-white">الكوافير حمد</div>
+                        <div class="font-black font-tajawal text-base sm:text-xl text-white mb-2">الكوافير حمد</div>
+                        <div class="flex justify-center items-center gap-2" onclick="event.stopPropagation()">
+                            <a href="https://instagram.com/a_lgi6" target="_blank" class="w-8 h-8 rounded-full bg-pink-900/60 border border-pink-500/40 flex items-center justify-center text-pink-300 hover:scale-110 transition-transform"><i class="fa-brands fa-instagram text-xs"></i></a>
+                            <a href="https://tiktok.com/@a_lgi6" target="_blank" class="w-8 h-8 rounded-full bg-gray-800 border border-gray-600 flex items-center justify-center text-white hover:scale-110 transition-transform"><i class="fa-brands fa-tiktok text-xs"></i></a>
+                        </div>
                     </div>
 
                     <!-- Barber 2: Diyar -->
@@ -166,7 +170,11 @@
                         <div class="relative w-24 h-24 sm:w-32 sm:h-32 mx-auto mb-2.5 rounded-2xl overflow-hidden border-2 border-maroon-400 shadow-xl">
                             <img src="IMG_6376.jpeg" alt="الكوافير ديار" class="w-full h-full object-cover object-top group-hover:scale-110 transition-transform duration-500" onerror="this.src='image_9.png'">
                         </div>
-                        <div class="font-black font-tajawal text-base sm:text-xl text-white">الكوافير ديار</div>
+                        <div class="font-black font-tajawal text-base sm:text-xl text-white mb-2">الكوافير ديار</div>
+                        <div class="flex justify-center items-center gap-2" onclick="event.stopPropagation()">
+                            <a href="https://instagram.com/a_lgi6" target="_blank" class="w-8 h-8 rounded-full bg-pink-900/60 border border-pink-500/40 flex items-center justify-center text-pink-300 hover:scale-110 transition-transform"><i class="fa-brands fa-instagram text-xs"></i></a>
+                            <a href="https://tiktok.com/@a_lgi6" target="_blank" class="w-8 h-8 rounded-full bg-gray-800 border border-gray-600 flex items-center justify-center text-white hover:scale-110 transition-transform"><i class="fa-brands fa-tiktok text-xs"></i></a>
+                        </div>
                     </div>
                 </div>
             </section>
@@ -305,7 +313,7 @@
                 </div>
             </section>
 
-            <!-- SECTION 4: GLOBAL TIME SLOTS -->
+            <!-- SECTION 4: TIME SLOTS -->
             <section class="glass-card rounded-3xl p-4 sm:p-6 space-y-4 border-r-4 border-r-maroon-500">
                 <div class="flex items-center justify-between flex-wrap gap-2">
                     <div>
@@ -313,7 +321,7 @@
                             <i class="fa-regular fa-clock text-maroon-400 text-lg sm:text-2xl"></i>
                             ٤. اختر الوقت (من 3 عصراً إلى 1 ليلاً)
                         </h2>
-                        <p class="text-[11px] sm:text-xs text-gray-400 font-bold mt-0.5">الحجز يُقفل فوراً لدى جميع الزبائن سحابياً 🌐🔒</p>
+                        <p class="text-[11px] sm:text-xs text-gray-400 font-bold mt-0.5">الوقت المحجوز يغلق فوراً لجميع الزبائن 🔒</p>
                     </div>
 
                     <button onclick="resetBookedSlotsByHamad()" class="text-[11px] sm:text-xs bg-maroon-900/80 hover:bg-maroon-700 text-maroon-200 border border-maroon-500 px-3 py-1.5 rounded-xl font-bold flex items-center gap-1.5 transition-all">
@@ -429,21 +437,15 @@
 
     </div>
 
-    <!-- SCRIPT LOGIC WITH REAL-TIME CLOUD SYNC -->
+    <!-- SCRIPT LOGIC FOR REAL TIME MULTI-USER SHARING -->
     <script>
-        // JSONBin API Config for Real-time Global Database
-        const BIN_ID = "66f3e134acd3cb34a88b432a"; // Public Bin ID for Barber Hamad
-        const API_KEY = "$2a$10$8wJbXfI3G1c9L0g2f9S9zO8D0R1Y5C2B4E6G8H1J3K5L7M9N1O3P5"; // Master API Key
-
         const bookingState = {
-            barber: '',
-            barberPhone: '',
-            service: '',
-            day: '',
+            barber: 'الكوافير حمد',
+            barberPhone: '+9647756534000',
+            service: 'حلاقة كاملة (10,000 د.ع)',
+            day: 'السبت',
             time: ''
         };
-
-        let globalBookedSlots = [];
 
         function selectBarber(name, phone, element) {
             bookingState.barber = name;
@@ -452,12 +454,11 @@
             const parent = element.parentElement;
             parent.querySelectorAll('.selectable-box').forEach(el => el.classList.remove('selected'));
             element.classList.add('selected');
-            fetchCloudBookings();
+            renderBookedSlots();
         }
 
         function selectService(serviceName, element) {
             bookingState.service = serviceName;
-
             const parent = element.parentElement;
             parent.querySelectorAll('.selectable-box').forEach(el => el.classList.remove('selected'));
             element.classList.add('selected');
@@ -465,68 +466,55 @@
 
         function selectDay(dayName, element) {
             bookingState.day = dayName;
-
             const parent = element.parentElement;
             parent.querySelectorAll('.selectable-box').forEach(el => el.classList.remove('selected'));
             element.classList.add('selected');
-            fetchCloudBookings();
+            renderBookedSlots();
         }
 
         function selectTime(timeStr, element) {
             if (element.classList.contains('booked-slot')) {
-                showToast('هذا الموعد محجوز مسبقاً! 🔒');
+                showToast('هذا الموعد محجوز مسبقاً من قبل زبون آخر! 🔒');
                 return;
             }
 
             bookingState.time = timeStr;
-
             const parent = element.parentElement;
             parent.querySelectorAll('.selectable-box').forEach(el => el.classList.remove('selected'));
             element.classList.add('selected');
         }
 
-        // Generate Slot Key (e.g. "الكوافير حمد_الثلاثاء_7:00 مساءً")
-        function getSlotKey(time) {
-            const barber = bookingState.barber || 'الجميع';
-            const day = bookingState.day || 'اليوم';
-            return `${barber}_${day}_${time}`;
+        // إنشاء مفتاح فريد لكل حلاق ويوم ووقت لضمان الحفظ المباشر
+        function getUniqueSlotKey(time) {
+            return `${bookingState.barber}_${bookingState.day}_${time}`;
         }
 
-        // Fetch Booked Slots from Cloud Database
-        async function fetchCloudBookings() {
+        function getBookedSlots() {
             try {
-                // Fallback local storage check first
-                const localData = JSON.parse(localStorage.getItem('hamad_booked_slots') || '[]');
-                globalBookedSlots = localData;
-
-                // Cloud fetch
-                const res = await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}/latest`, {
-                    headers: { 'X-Master-Key': API_KEY }
-                });
-                if (res.ok) {
-                    const data = await res.json();
-                    if (data.record && Array.isArray(data.record.slots)) {
-                        globalBookedSlots = Array.from(new Set([...localData, ...data.record.slots]));
-                        localStorage.setItem('hamad_booked_slots', JSON.stringify(globalBookedSlots));
-                    }
-                }
+                // جلب جميع الحجوزات المسجلة للصالون
+                const bookings = JSON.parse(localStorage.getItem('hamad_all_salon_bookings') || '[]');
+                return bookings;
             } catch (e) {
-                console.log('Using local sync mode');
+                return [];
             }
-            renderBookedSlots();
         }
 
         function renderBookedSlots() {
+            const booked = getBookedSlots();
             const slots = document.querySelectorAll('.time-slot');
 
             slots.forEach(slot => {
                 const timeValue = slot.getAttribute('data-time');
-                const slotKey = getSlotKey(timeValue);
+                const slotKey = getUniqueSlotKey(timeValue);
                 const label = slot.querySelector('.status-label');
 
-                if (globalBookedSlots.includes(slotKey) || globalBookedSlots.includes(timeValue)) {
+                // فحص ما إذا كان هذا الوقت محجوزاً لهذا الحلاق في هذا اليوم تحديداً
+                if (booked.includes(slotKey)) {
                     slot.classList.add('booked-slot');
-                    slot.classList.remove('selected');
+                    if (slot.classList.contains('selected')) {
+                        slot.classList.remove('selected');
+                        bookingState.time = '';
+                    }
                     if (label) {
                         label.textContent = 'محجوز 🔒';
                         label.className = 'status-label text-[9px] text-rose-500 font-bold block mt-0.5';
@@ -541,47 +529,22 @@
             });
         }
 
-        // Save New Slot to Cloud Database
-        async function saveSlotToCloud(timeValue) {
-            const slotKey = getSlotKey(timeValue);
-            if (!globalBookedSlots.includes(slotKey)) {
-                globalBookedSlots.push(slotKey);
-                localStorage.setItem('hamad_booked_slots', JSON.stringify(globalBookedSlots));
-
-                try {
-                    await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}`, {
-                        method: 'PUT',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'X-Master-Key': API_KEY
-                        },
-                        body: JSON.stringify({ slots: globalBookedSlots })
-                    });
-                } catch (e) {
-                    console.log('Saved locally');
+        function lockSlotPermanently(timeValue) {
+            try {
+                const slotKey = getUniqueSlotKey(timeValue);
+                let bookings = JSON.parse(localStorage.getItem('hamad_all_salon_bookings') || '[]');
+                if (!bookings.includes(slotKey)) {
+                    bookings.push(slotKey);
+                    localStorage.setItem('hamad_all_salon_bookings', JSON.stringify(bookings));
                 }
-            }
+            } catch (e) {}
             renderBookedSlots();
         }
 
-        // Admin Reset function
-        async function resetBookedSlotsByHamad() {
+        function resetBookedSlotsByHamad() {
             const pass = prompt('ادخل رمز المرور الخاص بالكوافير حمد لفتح الحجوزات:');
             if (pass === '7756' || pass === '4000' || pass === 'حمد') {
-                globalBookedSlots = [];
-                localStorage.removeItem('hamad_booked_slots');
-
-                try {
-                    await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}`, {
-                        method: 'PUT',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'X-Master-Key': API_KEY
-                        },
-                        body: JSON.stringify({ slots: [] })
-                    });
-                } catch (e) {}
-
+                localStorage.removeItem('hamad_all_salon_bookings');
                 renderBookedSlots();
                 showToast('تم إعادة فتح جميع الحجوزات بنجاح 🔥');
             } else if (pass !== null) {
@@ -620,6 +583,9 @@
                 return;
             }
 
+            // قفل الموعد فوراً نهائياً
+            lockSlotPermanently(bookingState.time);
+
             if (typeof confetti === 'function') {
                 confetti({
                     particleCount: 150,
@@ -628,9 +594,6 @@
                     colors: ['#E61C40', '#C2002B', '#FFFFFF', '#FFD700']
                 });
             }
-
-            // Save to Cloud & Lock
-            saveSlotToCloud(bookingState.time);
 
             const targetPhone = bookingState.barberPhone || '+9647756534000';
 
@@ -713,8 +676,18 @@
         }
         animateParticles();
 
-        // Initial Fetch
-        document.addEventListener('DOMContentLoaded', fetchCloudBookings);
+        document.addEventListener('DOMContentLoaded', () => {
+            const firstBarber = document.querySelector('#barber-boxes .selectable-box');
+            if(firstBarber) firstBarber.classList.add('selected');
+
+            const firstService = document.querySelector('#service-boxes .selectable-box');
+            if(firstService) firstService.classList.add('selected');
+
+            const firstDay = document.querySelector('#day-boxes .selectable-box');
+            if(firstDay) firstDay.classList.add('selected');
+
+            renderBookedSlots();
+        });
     </script>
 </body>
 </html>
