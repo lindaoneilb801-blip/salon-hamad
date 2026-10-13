@@ -580,7 +580,7 @@
                 return;
             }
 
-            // قفل الموعد فوراً وسحابياً في العالم كله
+            // 1. قفل الموعد فوراً وسحابياً في قاعدة البيانات
             db.ref('bookings/' + key).set({
                 clientName: name,
                 clientPhone: phone,
@@ -588,32 +588,23 @@
                 day: bookingState.day,
                 time: selectedTime,
                 timestamp: Date.now()
-            }).then(() => {
-                if (typeof confetti === 'function') {
-                    confetti({
-                        particleCount: 150,
-                        spread: 100,
-                        origin: { y: 0.6 },
-                        colors: ['#E61C40', '#C2002B', '#FFFFFF', '#FFD700']
-                    });
-                }
-
-                // التوجيه المباشر لواتساب الحلاق المختار حصرياً
-                const targetPhone = bookingState.barberPhone;
-                const message = `👑 *طلب حجز ملكي جديد - صالون الكوافير حمد* 👑%0A` +
-                    `============================%0A` +
-                    `👤 *اسم الزبون:* ${encodeURIComponent(name)}%0A` +
-                    `📱 *رقم الموبايل:* ${encodeURIComponent(phone)}%0A` +
-                    `💈 *الكوافير المطلوب:* ${encodeURIComponent(bookingState.barber)}%0A` +
-                    `✂️ *الخدمة:* ${encodeURIComponent(bookingState.service)}%0A` +
-                    `📅 *اليوم:* ${encodeURIComponent(bookingState.day)}%0A` +
-                    `⏰ *الوقت:* ${encodeURIComponent(selectedTime)}%0A` +
-                    `📍 *العنوان:* الانبار - حديثة - حي العسكري%0A` +
-                    `============================%0A` +
-                    `يرجى تأكيد الحجز وإرسال الموافقة وشكراً لكم 🔥`;
-
-                window.location.href = `https://wa.me/${targetPhone}?text=${message}`;
             });
+
+            // 2. التحويل المباشر للواتساب فوراً دون أي انتظار لتجاوز حظر أيفون (Safari)
+            const targetPhone = bookingState.barberPhone;
+            const message = `👑 *طلب حجز ملكي جديد - صالون الكوافير حمد* 👑%0A` +
+                `============================%0A` +
+                `👤 *اسم الزبون:* ${encodeURIComponent(name)}%0A` +
+                `📱 *رقم الموبايل:* ${encodeURIComponent(phone)}%0A` +
+                `💈 *الكوافير المطلوب:* ${encodeURIComponent(bookingState.barber)}%0A` +
+                `✂️ *الخدمة:* ${encodeURIComponent(bookingState.service)}%0A` +
+                `📅 *اليوم:* ${encodeURIComponent(bookingState.day)}%0A` +
+                `⏰ *الوقت:* ${encodeURIComponent(selectedTime)}%0A` +
+                `📍 *العنوان:* الانبار - حديثة - حي العسكري%0A` +
+                `============================%0A` +
+                `يرجى تأكيد الحجز وإرسال الموافقة وشكراً لكم 🔥`;
+
+            window.location.href = `https://wa.me/${targetPhone}?text=${message}`;
         }
 
         function showToast(message) {
