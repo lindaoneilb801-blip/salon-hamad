@@ -142,7 +142,7 @@
 
         <div id="booking-form" class="space-y-8">
 
-            <!-- SECTION 1: BARBERS (WITHOUT SOCIAL ICONS) -->
+            <!-- SECTION 1: BARBERS -->
             <section class="glass-card rounded-3xl p-4 sm:p-6 space-y-4 border-r-4 border-r-maroon-400">
                 <div class="flex items-center justify-between">
                     <h2 class="text-lg sm:text-2xl font-black font-changa text-white flex items-center gap-2 sm:gap-3">
@@ -466,7 +466,7 @@
 
         function selectTime(timeStr, element) {
             if (element.classList.contains('booked-slot')) {
-                showToast('هذا الموعد محجوز مسبقاً من قبل زبون آخر! 🔒');
+                showToast('هذا الموعد محجوز مسبقاً! 🔒');
                 return;
             }
 
@@ -474,6 +474,8 @@
             const parent = element.parentElement;
             parent.querySelectorAll('.selectable-box').forEach(el => el.classList.remove('selected'));
             element.classList.add('selected');
+            
+            showToast(`تم اختيار الوقت: ${timeStr} ⏱️`);
         }
 
         function getUniqueSlotKey(time) {
@@ -558,7 +560,7 @@
                 return;
             }
             if (!bookingState.time) {
-                showToast('يرجى اختيار وقت الموعد ⏰');
+                showToast('يرجى اختيار وقت الموعد أولاً ⏰');
                 return;
             }
             if (!name) {
@@ -572,7 +574,9 @@
                 return;
             }
 
-            lockSlotPermanently(bookingState.time);
+            // حفظ وقفل الموعد فوراً
+            const selectedTime = bookingState.time;
+            lockSlotPermanently(selectedTime);
 
             if (typeof confetti === 'function') {
                 confetti({
@@ -592,14 +596,14 @@
                 `💈 *الكوافير المطلوب:* ${encodeURIComponent(bookingState.barber)}%0A` +
                 `✂️ *الخدمة:* ${encodeURIComponent(bookingState.service)}%0A` +
                 `📅 *اليوم:* ${encodeURIComponent(bookingState.day)}%0A` +
-                `⏰ *الوقت:* ${encodeURIComponent(bookingState.time)}%0A` +
+                `⏰ *الوقت:* ${encodeURIComponent(selectedTime)}%0A` +
                 `📍 *العنوان:* الانبار - حديثة - حي العسكري%0A` +
                 `============================%0A` +
                 `يرجى تأكيد الحجز وإرسال الموافقة وشكراً لكم 🔥`;
 
             setTimeout(() => {
                 window.open(`https://wa.me/${targetPhone}?text=${message}`, '_blank');
-            }, 500);
+            }, 300);
         }
 
         function showToast(message) {
