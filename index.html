@@ -431,7 +431,7 @@
 
     </div>
 
-    <!-- FIREBASE REALTIME DATABASE SYNC SCRIPT -->
+    <!-- ULTIMATE SECURE CLOUD SYNC ENGINE -->
     <script>
         const firebaseConfig = {
             databaseURL: "https://salon-hamad-default-rtdb.firebaseio.com/"
@@ -493,10 +493,11 @@
             let cleanDay = day.replace(/🔥/g, '').trim();
             let cleanTime = time.replace(/🔥/g, '').trim();
             let raw = `${cleanBarber}_${cleanDay}_${cleanTime}`;
-            return btoa(unescape(encodeURIComponent(raw))).replace(/=/g, '').replace(/\//g, '_');
+            return btoa(unescape(encodeURIComponent(raw))).replace(/=/g, '').replace(/\//g, '_').replace(/\+/g, '_');
         }
 
-        db.ref('bookings').on('value', (snapshot) => {
+        // الاستماع الفوري اللحظي لقاعدة البيانات العامة المفتوحة
+        db.ref('slots_lock').on('value', (snapshot) => {
             bookedSlotsData = snapshot.val() || {};
             renderUI();
         });
@@ -531,7 +532,7 @@
         function resetBookedSlotsByHamad() {
             const pass = prompt('ادخل رمز المرور الخاص للحلاق لإعادة فتح الحجوزات:');
             if (pass === '7756' || pass === '4000' || pass === 'حمد') {
-                db.ref('bookings').remove().then(() => {
+                db.ref('slots_lock').remove().then(() => {
                     showToast('تم فتح جميع الأوقات وإلغاء الحجوزات بنجاح 🔥');
                 });
             } else if (pass !== null) {
@@ -579,12 +580,10 @@
                 return;
             }
 
-            db.ref('bookings/' + key).set({
+            // قفل الموعد فوراً بالسحابة العامة الموحدة
+            db.ref('slots_lock/' + key).set({
                 clientName: name,
                 clientPhone: phone,
-                barber: bookingState.barber,
-                day: bookingState.day,
-                time: selectedTime,
                 timestamp: Date.now()
             });
 
@@ -597,7 +596,7 @@
                 });
             }
 
-            showToast('جاري تحويلك إلى الواتساب وقفل الموعد... ⚡');
+            showToast('جاري قفل الموعد وتحويلك للواتساب... ⚡');
 
             setTimeout(() => {
                 const targetPhone = bookingState.barberPhone;
@@ -614,7 +613,7 @@
                     `يرجى تأكيد الحجز وإرسال الموافقة وشكراً لكم 🔥`;
 
                 window.location.href = `https://wa.me/${targetPhone}?text=${message}`;
-            }, 500);
+            }, 600);
         }
 
         function showToast(message) {
