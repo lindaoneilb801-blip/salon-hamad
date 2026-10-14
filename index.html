@@ -431,7 +431,7 @@
 
     </div>
 
-    <!-- FIREBASE REALTIME DATABASE SYNC (FIXED KEY GENERATION) -->
+    <!-- FIREBASE REALTIME DATABASE SYNC SCRIPT -->
     <script>
         const firebaseConfig = {
             databaseURL: "https://salon-hamad-default-rtdb.firebaseio.com/"
@@ -488,10 +488,13 @@
             showToast(`تم اختيار الوقت: ${timeStr} ⏱️`);
         }
 
-        // دالة آمنة 100% لتوليد مفتاح قاعدة البيانات بدون أي حروف محظورة أو أخطاء
+        // دالة آمنة لتوليد مفتاح مميز وغير مكرر
         function getSafeKey(barber, day, time) {
-            let clean = (barber + "_" + day + "_" + time).replace(/[^\u0600-\u06FFa-zA-Z0-9]/g, "_");
-            return clean;
+            let cleanBarber = barber.trim();
+            let cleanDay = day.replace(/🔥/g, '').trim();
+            let cleanTime = time.replace(/🔥/g, '').trim();
+            let raw = `${cleanBarber}_${cleanDay}_${cleanTime}`;
+            return btoa(unescape(encodeURIComponent(raw))).replace(/=/g, '').replace(/\//g, '_');
         }
 
         // الاستماع الفوري واللحظي لقاعدة البيانات بكل الأجهزة
@@ -578,7 +581,7 @@
                 return;
             }
 
-            // قفل الموعد فوراً وسحابياً في العالم كله
+            // 1. إرسال وتثبيت الحجز سحابياً فوراً قبل الانتقال
             db.ref('bookings/' + key).set({
                 clientName: name,
                 clientPhone: phone,
@@ -588,21 +591,34 @@
                 timestamp: Date.now()
             });
 
-            // التحويل المباشر للواتساب فوراً دون أي انتظار
-            const targetPhone = bookingState.barberPhone;
-            const message = `👑 *طلب حجز ملكي جديد - صالون الكوافير حمد* 👑%0A` +
-                `============================%0A` +
-                `👤 *اسم الزبون:* ${encodeURIComponent(name)}%0A` +
-                `📱 *رقم الموبايل:* ${encodeURIComponent(phone)}%0A` +
-                `💈 *الكوافير المطلوب:* ${encodeURIComponent(bookingState.barber)}%0A` +
-                `✂️ *الخدمة:* ${encodeURIComponent(bookingState.service)}%0A` +
-                `📅 *اليوم:* ${encodeURIComponent(bookingState.day)}%0A` +
-                `⏰ *الوقت:* ${encodeURIComponent(selectedTime)}%0A` +
-                `📍 *العنوان:* الانبار - حديثة - حي العسكري%0A` +
-                `============================%0A` +
-                `يرجى تأكيد الحجز وإرسال الموافقة وشكراً لكم 🔥`;
+            if (typeof confetti === 'function') {
+                confetti({
+                    particleCount: 150,
+                    spread: 100,
+                    origin: { y: 0.6 },
+                    colors: ['#E61C40', '#C2002B', '#FFFFFF', '#FFD700']
+                });
+            }
 
-            window.location.href = `https://wa.me/${targetPhone}?text=${message}`;
+            showToast('جاري تحويلك إلى الواتساب وقفل الموعد... ⚡');
+
+            // 2. تأخير بسيط (0.5 ثانية) لضمان إرسال البيانات للسحابة وانغلاق الموعد بكل الأجهزة قبل الانتقال للواتساب
+            setTimeout(() => {
+                const targetPhone = bookingState.barberPhone;
+                const message = `👑 *طلب حجز ملكي جديد - صالون الكوافير حمد* 👑%0A` +
+                    `============================%0A` +
+                    `👤 *اسم الزبون:* ${encodeURIComponent(name)}%0A` +
+                    `📱 *رقم الموبايل:* ${encodeURIComponent(phone)}%0A` +
+                    `💈 *الكوافير المطلوب:* ${encodeURIComponent(bookingState.barber)}%0A` +
+                    `✂️ *الخدمة:* ${encodeURIComponent(bookingState.service)}%0A` +
+                    `📅 *اليوم:* ${encodeURIComponent(bookingState.day)}%0A` +
+                    `⏰ *الوقت:* ${encodeURIComponent(selectedTime)}%0A` +
+                    `📍 *العنوان:* الانبار - حديثة - حي العسكري%0A` +
+                    `============================%0A` +
+                    `يرجى تأكيد الحجز وإرسال الموافقة وشكراً لكم 🔥`;
+
+                window.location.href = `https://wa.me/${targetPhone}?text=${message}`;
+            }, 500);
         }
 
         function showToast(message) {
