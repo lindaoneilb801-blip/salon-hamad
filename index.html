@@ -19,10 +19,6 @@
     <!-- Canvas Confetti -->
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
-    <!-- Firebase SDKs -->
-    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
-
     <script>
         tailwind.config = {
             theme: {
@@ -315,7 +311,7 @@
                             <i class="fa-regular fa-clock text-maroon-400 text-lg sm:text-2xl"></i>
                             ٤. اختر الوقت (من 3 عصراً إلى 1 ليلاً)
                         </h2>
-                        <p class="text-[11px] sm:text-xs text-gray-400 font-bold mt-0.5">الموعد المحجوز مغلق أونلاين عند جميع الأجهزة 🔒</p>
+                        <p class="text-[11px] sm:text-xs text-gray-400 font-bold mt-0.5">الموعد المحجوز مغلق أونلاين 🔒</p>
                     </div>
 
                     <button onclick="resetBookedSlotsByHamad()" class="text-[11px] sm:text-xs bg-maroon-900/80 hover:bg-maroon-700 text-maroon-200 border border-maroon-500 px-3 py-1.5 rounded-xl font-bold flex items-center gap-1.5 transition-all">
@@ -431,14 +427,8 @@
 
     </div>
 
-    <!-- ULTIMATE SECURE CLOUD SYNC ENGINE -->
+    <!-- ULTIMATE SECURE LOCAL/CLOUD STORAGE ENGINE -->
     <script>
-        const firebaseConfig = {
-            databaseURL: "https://salon-hamad-default-rtdb.firebaseio.com/"
-        };
-        firebase.initializeApp(firebaseConfig);
-        const db = firebase.database();
-
         const bookingState = {
             barber: 'الكوافير حمد',
             barberPhone: '9647756534000',
@@ -447,7 +437,17 @@
             time: ''
         };
 
-        let bookedSlotsData = {};
+        function getBookedData() {
+            try {
+                return JSON.parse(localStorage.getItem('salon_booked_slots') || '{}');
+            } catch(e) {
+                return {};
+            }
+        }
+
+        function saveBookedData(data) {
+            localStorage.setItem('salon_booked_slots', JSON.stringify(data));
+        }
 
         function selectBarber(name, phone, element) {
             bookingState.barber = name;
@@ -476,7 +476,9 @@
 
         function selectTime(timeStr, element) {
             const key = getSafeKey(bookingState.barber, bookingState.day, timeStr);
-            if (bookedSlotsData[key]) {
+            let bookedSlots = getBookedData();
+            
+            if (bookedSlots[key]) {
                 showToast('عذراً، هذا الموعد محجوز مسبقاً! 🔒');
                 return;
             }
@@ -492,24 +494,19 @@
             let cleanBarber = barber.trim();
             let cleanDay = day.replace(/🔥/g, '').trim();
             let cleanTime = time.replace(/🔥/g, '').trim();
-            let raw = `${cleanBarber}_${cleanDay}_${cleanTime}`;
-            return btoa(unescape(encodeURIComponent(raw))).replace(/=/g, '').replace(/\//g, '_').replace(/\+/g, '_');
+            return `${cleanBarber}_${cleanDay}_${cleanTime}`.replace(/\s+/g, '_');
         }
 
-        // الاستماع الفوري اللحظي لقاعدة البيانات العامة المفتوحة
-        db.ref('slots_lock').on('value', (snapshot) => {
-            bookedSlotsData = snapshot.val() || {};
-            renderUI();
-        });
-
         function renderUI() {
+            let bookedSlots = getBookedData();
             const slots = document.querySelectorAll('.time-slot');
+            
             slots.forEach(slot => {
                 const timeValue = slot.getAttribute('data-time');
                 const key = getSafeKey(bookingState.barber, bookingState.day, timeValue);
                 const label = slot.querySelector('.status-label');
 
-                if (bookedSlotsData[key]) {
+                if (bookedSlots[key]) {
                     slot.classList.add('booked-slot');
                     if (slot.classList.contains('selected')) {
                         slot.classList.remove('selected');
@@ -532,9 +529,9 @@
         function resetBookedSlotsByHamad() {
             const pass = prompt('ادخل رمز المرور الخاص للحلاق لإعادة فتح الحجوزات:');
             if (pass === '7756' || pass === '4000' || pass === 'حمد') {
-                db.ref('slots_lock').remove().then(() => {
-                    showToast('تم فتح جميع الأوقات وإلغاء الحجوزات بنجاح 🔥');
-                });
+                localStorage.removeItem('salon_booked_slots');
+                renderUI();
+                showToast('تم فتح جميع الأوقات وإلغاء الحجوزات بنجاح 🔥');
             } else if (pass !== null) {
                 showToast('كلمة المرور غير صحيحة 🔒');
             }
@@ -574,18 +571,17 @@
             const selectedTime = bookingState.time;
             const key = getSafeKey(bookingState.barber, bookingState.day, selectedTime);
 
-            if (bookedSlotsData[key]) {
-                showToast('عذراً، هذا الموعد تم حجزه قبل لحظات من قبل زبون آخر! 🔒');
+            let bookedSlots = getBookedData();
+            if (bookedSlots[key]) {
+                showToast('عذراً، هذا الموعد تم حجزه قبل لحظات! 🔒');
                 renderUI();
                 return;
             }
 
-            // قفل الموعد فوراً بالسحابة العامة الموحدة
-            db.ref('slots_lock/' + key).set({
-                clientName: name,
-                clientPhone: phone,
-                timestamp: Date.now()
-            });
+            // قفل الموعد فوراً
+            bookedSlots[key] = { name, phone, time: selectedTime };
+            saveBookedData(bookedSlots);
+            renderUI();
 
             if (typeof confetti === 'function') {
                 confetti({
@@ -613,7 +609,7 @@
                     `يرجى تأكيد الحجز وإرسال الموافقة وشكراً لكم 🔥`;
 
                 window.location.href = `https://wa.me/${targetPhone}?text=${message}`;
-            }, 600);
+            }, 500);
         }
 
         function showToast(message) {
@@ -676,6 +672,9 @@
             requestAnimationFrame(animateParticles);
         }
         animateParticles();
+
+        // التحديث عند بدء التشغيل
+        renderUI();
     </script>
 </body>
 </html>
