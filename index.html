@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <title>صالون الكوافير حمد | VIP Barber Booking</title>
 
     <!-- Tailwind CSS -->
@@ -18,6 +19,10 @@
 
     <!-- Canvas Confetti -->
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
 
     <script>
         tailwind.config = {
@@ -311,7 +316,7 @@
                             <i class="fa-regular fa-clock text-maroon-400 text-lg sm:text-2xl"></i>
                             ٤. اختر الوقت (من 3 عصراً إلى 1 ليلاً)
                         </h2>
-                        <p class="text-[11px] sm:text-xs text-gray-400 font-bold mt-0.5">الموعد المحجوز مغلق أونلاين عند جميع الأجهزة 🌐🔒</p>
+                        <p class="text-[11px] sm:text-xs text-gray-400 font-bold mt-0.5">الموعد المحجوز مغلق أونلاين عند جميع أجهزة العالم 🌐🔒</p>
                     </div>
 
                     <button onclick="resetBookedSlotsByHamad()" class="text-[11px] sm:text-xs bg-maroon-900/80 hover:bg-maroon-700 text-maroon-200 border border-maroon-500 px-3 py-1.5 rounded-xl font-bold flex items-center gap-1.5 transition-all">
@@ -427,11 +432,13 @@
 
     </div>
 
-    <!-- GLOBAL REALTIME CLOUD ENGINE (JSONBIN SYNC) -->
+    <!-- GLOBAL REALTIME FIREBASE SYNC ENGINE (WORLDWIDE) -->
     <script>
-        const BIN_ID = '67ab3325e41b4d34e4890c29';
-        const API_KEY = '$2a$10$U7/s6Q3J8I7mB5A7fJ9e9uW7vM5kX2y8Z9q0p1r2s3t4u5v6w7x8y';
-        const API_URL = `https://api.jsonbin.io/v3/b/${BIN_ID}`;
+        const firebaseConfig = {
+            databaseURL: "https://salon-hamad-default-rtdb.firebaseio.com/"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
 
         const bookingState = {
             barber: 'الكوافير حمد',
@@ -442,36 +449,6 @@
         };
 
         let bookedSlotsData = {};
-
-        async function fetchCloudData() {
-            try {
-                const res = await fetch(`${API_URL}/latest`, {
-                    headers: { 'X-Master-Key': API_KEY }
-                });
-                if (res.ok) {
-                    const json = await res.json();
-                    bookedSlotsData = json.record || {};
-                    renderUI();
-                }
-            } catch (e) {
-                console.log('Error fetching cloud data:', e);
-            }
-        }
-
-        async function updateCloudData(newData) {
-            try {
-                await fetch(API_URL, {
-                    method: 'PUT',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-Master-Key': API_KEY
-                    },
-                    body: JSON.stringify(newData)
-                });
-            } catch (e) {
-                console.log('Error updating cloud data:', e);
-            }
-        }
 
         function selectBarber(name, phone, element) {
             bookingState.barber = name;
@@ -516,8 +493,15 @@
             let cleanBarber = barber.trim();
             let cleanDay = day.replace(/🔥/g, '').trim();
             let cleanTime = time.replace(/🔥/g, '').trim();
-            return `${cleanBarber}_${cleanDay}_${cleanTime}`.replace(/\s+/g, '_');
+            let raw = `${cleanBarber}_${cleanDay}_${cleanTime}`;
+            return btoa(unescape(encodeURIComponent(raw))).replace(/=/g, '').replace(/\//g, '_').replace(/\+/g, '_');
         }
+
+        // الاستماع الفوري واللحقي بالسحابة العالمية (تحديث مباشر لكل أجهزة العالم)
+        db.ref('global_world_slots').on('value', (snapshot) => {
+            bookedSlotsData = snapshot.val() || {};
+            renderUI();
+        });
 
         function renderUI() {
             const slots = document.querySelectorAll('.time-slot');
@@ -546,19 +530,18 @@
             });
         }
 
-        async function resetBookedSlotsByHamad() {
+        function resetBookedSlotsByHamad() {
             const pass = prompt('ادخل رمز المرور الخاص للحلاق لإعادة فتح الحجوزات:');
             if (pass === '7756' || pass === '4000' || pass === 'حمد') {
-                bookedSlotsData = {};
-                await updateCloudData({});
-                renderUI();
-                showToast('تم فتح جميع الأوقات وإلغاء الحجوزات عالمياً 🔥');
+                db.ref('global_world_slots').remove().then(() => {
+                    showToast('تم فتح جميع الأوقات عالمياً بنجاح 🔥');
+                });
             } else if (pass !== null) {
                 showToast('كلمة المرور غير صحيحة 🔒');
             }
         }
 
-        async function submitBooking() {
+        function submitBooking() {
             const name = document.getElementById('client-name').value.trim();
             const phone = document.getElementById('client-phone').value.trim();
 
@@ -593,15 +576,17 @@
             const key = getSafeKey(bookingState.barber, bookingState.day, selectedTime);
 
             if (bookedSlotsData[key]) {
-                showToast('عذراً، هذا الموعد تم حجزه قبل لحظات! 🔒');
+                showToast('عذراً، هذا الموعد تم حجزه قبل لحظات من قبل زبون آخر! 🔒');
                 renderUI();
                 return;
             }
 
-            // القفل السحابي العالمي
-            bookedSlotsData[key] = { name, phone, timestamp: Date.now() };
-            renderUI();
-            updateCloudData(bookedSlotsData);
+            // قفل الموعد فوراً بالسحابة العالمية الموحدة لكل الأجهزة بالعالم
+            db.ref('global_world_slots/' + key).set({
+                clientName: name,
+                clientPhone: phone,
+                timestamp: Date.now()
+            });
 
             if (typeof confetti === 'function') {
                 confetti({
@@ -612,7 +597,7 @@
                 });
             }
 
-            showToast('جاري قفل الموعد وتحويلك للواتساب... ⚡');
+            showToast('جاري قفل الموعد عالمياً وتحويلك للواتساب... ⚡');
 
             setTimeout(() => {
                 const targetPhone = bookingState.barberPhone;
@@ -692,10 +677,6 @@
             requestAnimationFrame(animateParticles);
         }
         animateParticles();
-
-        // التحديث عند فتح الصفحة وكل 3 ثواني لقراءة السيرفر السحابي
-        fetchCloudData();
-        setInterval(fetchCloudData, 3000);
     </script>
 </body>
 </html>
