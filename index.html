@@ -3,6 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
     <title>صالون الكوافير حمد | VIP Barber Booking</title>
 
     <!-- Tailwind CSS -->
@@ -427,7 +430,6 @@
 
     </div>
 
-    <!-- ULTIMATE SECURE LOCAL/CLOUD STORAGE ENGINE -->
     <script>
         const bookingState = {
             barber: 'الكوافير حمد',
@@ -439,14 +441,14 @@
 
         function getBookedData() {
             try {
-                return JSON.parse(localStorage.getItem('salon_booked_slots') || '{}');
+                return JSON.parse(localStorage.getItem('salon_booked_slots_v2') || '{}');
             } catch(e) {
                 return {};
             }
         }
 
         function saveBookedData(data) {
-            localStorage.setItem('salon_booked_slots', JSON.stringify(data));
+            localStorage.setItem('salon_booked_slots_v2', JSON.stringify(data));
         }
 
         function selectBarber(name, phone, element) {
@@ -529,7 +531,7 @@
         function resetBookedSlotsByHamad() {
             const pass = prompt('ادخل رمز المرور الخاص للحلاق لإعادة فتح الحجوزات:');
             if (pass === '7756' || pass === '4000' || pass === 'حمد') {
-                localStorage.removeItem('salon_booked_slots');
+                localStorage.removeItem('salon_booked_slots_v2');
                 renderUI();
                 showToast('تم فتح جميع الأوقات وإلغاء الحجوزات بنجاح 🔥');
             } else if (pass !== null) {
@@ -578,7 +580,6 @@
                 return;
             }
 
-            // قفل الموعد فوراً
             bookedSlots[key] = { name, phone, time: selectedTime };
             saveBookedData(bookedSlots);
             renderUI();
@@ -673,7 +674,6 @@
         }
         animateParticles();
 
-        // التحديث عند بدء التشغيل
         renderUI();
     </script>
 </body>
