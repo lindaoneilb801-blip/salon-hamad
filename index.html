@@ -19,7 +19,7 @@
     <!-- Canvas Confetti -->
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
-    <!-- Firebase Realtime Database SDKs -->
+    <!-- Firebase SDKs -->
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
 
@@ -431,7 +431,7 @@
 
     </div>
 
-    <!-- FIREBASE REALTIME DATABASE SYNC SCRIPT -->
+    <!-- FIREBASE REALTIME DATABASE SYNC -->
     <script>
         const firebaseConfig = {
             databaseURL: "https://salon-hamad-default-rtdb.firebaseio.com/"
@@ -496,7 +496,7 @@
             return btoa(unescape(encodeURIComponent(raw))).replace(/=/g, '');
         }
 
-        // الاستماع الفوري واللحظي لقاعدة البيانات
+        // الاستماع الفوري واللحظي لقاعدة البيانات بكل الأجهزة
         db.ref('bookings').on('value', (snapshot) => {
             bookedSlotsData = snapshot.val() || {};
             renderUI();
@@ -580,7 +580,7 @@
                 return;
             }
 
-            // 1. قفل الموعد فوراً وسحابياً في قاعدة البيانات
+            // قفل الموعد فوراً وسحابياً في العالم كله
             db.ref('bookings/' + key).set({
                 clientName: name,
                 clientPhone: phone,
@@ -590,7 +590,7 @@
                 timestamp: Date.now()
             });
 
-            // 2. التحويل المباشر للواتساب فوراً دون أي انتظار لتجاوز حظر أيفون (Safari)
+            // التحويل المباشر للواتساب فوراً دون أي انتظار
             const targetPhone = bookingState.barberPhone;
             const message = `👑 *طلب حجز ملكي جديد - صالون الكوافير حمد* 👑%0A` +
                 `============================%0A` +
