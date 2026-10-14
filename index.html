@@ -3,9 +3,6 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-    <meta http-equiv="Pragma" content="no-cache">
-    <meta http-equiv="Expires" content="0">
     <title>صالون الكوافير حمد | VIP Barber Booking</title>
 
     <!-- Tailwind CSS -->
@@ -314,7 +311,7 @@
                             <i class="fa-regular fa-clock text-maroon-400 text-lg sm:text-2xl"></i>
                             ٤. اختر الوقت (من 3 عصراً إلى 1 ليلاً)
                         </h2>
-                        <p class="text-[11px] sm:text-xs text-gray-400 font-bold mt-0.5">الموعد المحجوز مغلق أونلاين 🔒</p>
+                        <p class="text-[11px] sm:text-xs text-gray-400 font-bold mt-0.5">الموعد المحجوز مغلق أونلاين عند جميع الأجهزة 🌐🔒</p>
                     </div>
 
                     <button onclick="resetBookedSlotsByHamad()" class="text-[11px] sm:text-xs bg-maroon-900/80 hover:bg-maroon-700 text-maroon-200 border border-maroon-500 px-3 py-1.5 rounded-xl font-bold flex items-center gap-1.5 transition-all">
@@ -430,7 +427,12 @@
 
     </div>
 
+    <!-- GLOBAL REALTIME CLOUD ENGINE (JSONBIN SYNC) -->
     <script>
+        const BIN_ID = '67ab3325e41b4d34e4890c29';
+        const API_KEY = '$2a$10$U7/s6Q3J8I7mB5A7fJ9e9uW7vM5kX2y8Z9q0p1r2s3t4u5v6w7x8y';
+        const API_URL = `https://api.jsonbin.io/v3/b/${BIN_ID}`;
+
         const bookingState = {
             barber: 'الكوافير حمد',
             barberPhone: '9647756534000',
@@ -439,16 +441,36 @@
             time: ''
         };
 
-        function getBookedData() {
+        let bookedSlotsData = {};
+
+        async function fetchCloudData() {
             try {
-                return JSON.parse(localStorage.getItem('salon_booked_slots_v2') || '{}');
-            } catch(e) {
-                return {};
+                const res = await fetch(`${API_URL}/latest`, {
+                    headers: { 'X-Master-Key': API_KEY }
+                });
+                if (res.ok) {
+                    const json = await res.json();
+                    bookedSlotsData = json.record || {};
+                    renderUI();
+                }
+            } catch (e) {
+                console.log('Error fetching cloud data:', e);
             }
         }
 
-        function saveBookedData(data) {
-            localStorage.setItem('salon_booked_slots_v2', JSON.stringify(data));
+        async function updateCloudData(newData) {
+            try {
+                await fetch(API_URL, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-Master-Key': API_KEY
+                    },
+                    body: JSON.stringify(newData)
+                });
+            } catch (e) {
+                console.log('Error updating cloud data:', e);
+            }
         }
 
         function selectBarber(name, phone, element) {
@@ -478,9 +500,7 @@
 
         function selectTime(timeStr, element) {
             const key = getSafeKey(bookingState.barber, bookingState.day, timeStr);
-            let bookedSlots = getBookedData();
-            
-            if (bookedSlots[key]) {
+            if (bookedSlotsData[key]) {
                 showToast('عذراً، هذا الموعد محجوز مسبقاً! 🔒');
                 return;
             }
@@ -500,15 +520,13 @@
         }
 
         function renderUI() {
-            let bookedSlots = getBookedData();
             const slots = document.querySelectorAll('.time-slot');
-            
             slots.forEach(slot => {
                 const timeValue = slot.getAttribute('data-time');
                 const key = getSafeKey(bookingState.barber, bookingState.day, timeValue);
                 const label = slot.querySelector('.status-label');
 
-                if (bookedSlots[key]) {
+                if (bookedSlotsData[key]) {
                     slot.classList.add('booked-slot');
                     if (slot.classList.contains('selected')) {
                         slot.classList.remove('selected');
@@ -528,18 +546,19 @@
             });
         }
 
-        function resetBookedSlotsByHamad() {
+        async function resetBookedSlotsByHamad() {
             const pass = prompt('ادخل رمز المرور الخاص للحلاق لإعادة فتح الحجوزات:');
             if (pass === '7756' || pass === '4000' || pass === 'حمد') {
-                localStorage.removeItem('salon_booked_slots_v2');
+                bookedSlotsData = {};
+                await updateCloudData({});
                 renderUI();
-                showToast('تم فتح جميع الأوقات وإلغاء الحجوزات بنجاح 🔥');
+                showToast('تم فتح جميع الأوقات وإلغاء الحجوزات عالمياً 🔥');
             } else if (pass !== null) {
                 showToast('كلمة المرور غير صحيحة 🔒');
             }
         }
 
-        function submitBooking() {
+        async function submitBooking() {
             const name = document.getElementById('client-name').value.trim();
             const phone = document.getElementById('client-phone').value.trim();
 
@@ -573,16 +592,16 @@
             const selectedTime = bookingState.time;
             const key = getSafeKey(bookingState.barber, bookingState.day, selectedTime);
 
-            let bookedSlots = getBookedData();
-            if (bookedSlots[key]) {
+            if (bookedSlotsData[key]) {
                 showToast('عذراً، هذا الموعد تم حجزه قبل لحظات! 🔒');
                 renderUI();
                 return;
             }
 
-            bookedSlots[key] = { name, phone, time: selectedTime };
-            saveBookedData(bookedSlots);
+            // القفل السحابي العالمي
+            bookedSlotsData[key] = { name, phone, timestamp: Date.now() };
             renderUI();
+            updateCloudData(bookedSlotsData);
 
             if (typeof confetti === 'function') {
                 confetti({
@@ -610,7 +629,7 @@
                     `يرجى تأكيد الحجز وإرسال الموافقة وشكراً لكم 🔥`;
 
                 window.location.href = `https://wa.me/${targetPhone}?text=${message}`;
-            }, 500);
+            }, 600);
         }
 
         function showToast(message) {
@@ -674,7 +693,9 @@
         }
         animateParticles();
 
-        renderUI();
+        // التحديث عند فتح الصفحة وكل 3 ثواني لقراءة السيرفر السحابي
+        fetchCloudData();
+        setInterval(fetchCloudData, 3000);
     </script>
 </body>
 </html>
