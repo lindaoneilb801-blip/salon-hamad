@@ -431,7 +431,7 @@
 
     </div>
 
-    <!-- FIREBASE REALTIME DATABASE SYNC -->
+    <!-- FIREBASE REALTIME DATABASE SYNC (FIXED KEY GENERATION) -->
     <script>
         const firebaseConfig = {
             databaseURL: "https://salon-hamad-default-rtdb.firebaseio.com/"
@@ -488,12 +488,10 @@
             showToast(`تم اختيار الوقت: ${timeStr} ⏱️`);
         }
 
+        // دالة آمنة 100% لتوليد مفتاح قاعدة البيانات بدون أي حروف محظورة أو أخطاء
         function getSafeKey(barber, day, time) {
-            let cleanBarber = barber.trim();
-            let cleanDay = day.replace(/🔥/g, '').trim();
-            let cleanTime = time.replace(/🔥/g, '').trim();
-            let raw = `${cleanBarber}_${cleanDay}_${cleanTime}`;
-            return btoa(unescape(encodeURIComponent(raw))).replace(/=/g, '');
+            let clean = (barber + "_" + day + "_" + time).replace(/[^\u0600-\u06FFa-zA-Z0-9]/g, "_");
+            return clean;
         }
 
         // الاستماع الفوري واللحظي لقاعدة البيانات بكل الأجهزة
